@@ -1,135 +1,223 @@
 .resaltado {
-    background: linear-gradient(90deg, #FF6B00, #007BFF);
-    color: black;
-    padding: 0 6px;
-    border-radius: 4px;
-    font-weight: 700;
-    margin-left: 5px;
-  }
-  
-  .barra-lateral {
-    position: fixed;
-    top: 0;
-    right: -260px;
-    width: 260px;
-    height: 100%;
-    background: #ffffff;
-    color: #1a1a1a;
-    padding: 2rem 1rem;
-    transition: right 0.4s ease, box-shadow 0.4s ease;
-    z-index: 1000;
-    box-shadow: -6px 0 25px rgba(0, 0, 0, 0.08);
-    border-left: 3px solid #FF6B00;
-    border-radius: 16px 0 0 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: #FF6B00 #f0f0f0;
-  }
-  
-  .barra-lateral::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .barra-lateral::-webkit-scrollbar-thumb {
-    background-color: #FF6B00;
-    border-radius: 10px;
-  }
-  
-  .barra-lateral::-webkit-scrollbar-track {
-    background-color: #f0f0f0;
-  }
-  
-  .barra-lateral.activa {
-    right: 0;
-  }
-  
-  .barra-lateral .logo img {
-    width: 130px;
-    display: block;
-    margin: 0 auto 1.5rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-    border-radius: 12px;
-  }
-  
-  .iconos-utilidad {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .barra-lateral nav ul {
-    list-style: none;
-  }
-  
-  .barra-lateral nav ul li {
-    margin: 1.2rem 0;
-    position: relative;
-  }
-  
-  .barra-lateral nav ul li a,
-  .iconos-utilidad li a {
-    color: #222;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.1rem;
-    display: block;
-    padding: 0.6rem 1rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-  }
-  
-  .iconos-utilidad li a {
-    font-size: 1.3rem;
-    padding: 0.5rem 0.8rem;
-  }
-  
-  .barra-lateral nav ul li a:hover,
-  .iconos-utilidad li a:hover {
-    background: linear-gradient(90deg, #007BFF, #00C6FF);
-    color: #fff;
-    transform: translateX(-4px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-  }
-  
-  .contenido-desplegable {
-    list-style: none;
-    padding-left: 15px;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.5s ease;
-  }
-  
-  .contenido-desplegable li a {
-    padding: 0.5rem 1rem;
-    font-size: 0.95rem;
-  }
-  
-  .contenido-desplegable.mostrar {
-    max-height: 500px;
-    opacity: 1;
-  }
-  
-  .alternar-menu {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: linear-gradient(90deg, #FF6B00, #ff8c42);
-    color: #fff;
-    border: none;
-    padding: 12px 16px;
-    font-size: 20px;
-    cursor: pointer;
-    border-radius: 12px;
-    z-index: 1100;
-    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
-    transition: all 0.3s ease;
-  }
-  
-  .alternar-menu:hover {
-    transform: scale(1.1) rotate(3deg);
-    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
-  }
+  background: linear-gradient(90deg, #FF6B00, #007BFF);
+  color: black;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.barra-lateral {
+  position: fixed;
+  top: 0;
+  right: -260px;
+  width: 260px;
+  height: 100%;
+  background: #ffffff;
+  color: #1a1a1a;
+  /* IMPORTANTE: Evita que el padding sume ancho extra y se desborde */
+  box-sizing: border-box; 
+  padding: 2rem 1rem;
+  transition: right 0.4s ease, box-shadow 0.4s ease;
+  z-index: 1000;
+  box-shadow: -6px 0 25px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid #FF6B00;
+  border-radius: 16px 0 0 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #FF6B00 #f0f0f0;
+}
+
+.barra-lateral::-webkit-scrollbar {
+  width: 8px;
+}
+
+.barra-lateral::-webkit-scrollbar-thumb {
+  background-color: #FF6B00;
+  border-radius: 10px;
+}
+
+.barra-lateral::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+.barra-lateral.activa {
+  right: 0;
+}
+
+.barra-lateral .logo img {
+  width: 130px;
+  display: block;
+  margin: 0 auto 1.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  border-radius: 12px;
+}
+
+/* --- BOTONES SUPERIORES EN COLUMNA --- */
+.iconos-utilidad {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  flex-direction: column; 
+  gap: 0.6rem; 
+  width: 100%;
+}
+
+.iconos-utilidad li {
+  width: 100%;
+  /* !important anula la clase ms-3 que tienes en el HTML y evita que se mueva a la derecha */
+  margin: 0 !important; 
+}
+
+/* Formato de botón y CENTRADO de contenido */
+.iconos-utilidad li > a,
+.iconos-utilidad li > button {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* CENTRA horizontalmente flex */
+  text-align: center;      /* CENTRA el texto */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  color: #333 !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.iconos-utilidad li > a:hover,
+.iconos-utilidad li > button:hover {
+  background: linear-gradient(90deg, #007BFF, #00C6FF) !important;
+  color: #fff !important;
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  border-color: transparent;
+}
+
+
+/* --- ARREGLO DEL DESPLEGABLE DEL PERFIL --- */
+.barra-lateral .dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.barra-lateral .dropdown-toggle {
+  background: #f8f9fa !important; /* Mismo gris que los demás */
+  border: 1px solid #eaeaea !important;
+  padding: 0.7rem 1rem !important;
+  border-radius: 10px;
+  width: 100%;
+  display: block;
+  color: #333 !important;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  text-align: center !important; /* CENTRA el texto del dropdown */
+  transition: all 0.3s ease;
+}
+
+/* AHORA SÍ: El efecto azul brillante al pasar el ratón por el dropdown */
+.barra-lateral .dropdown-toggle:hover {
+  background: linear-gradient(90deg, #007BFF, #00C6FF) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  border-color: transparent !important;
+}
+
+.barra-lateral .dropdown-menu {
+  position: absolute !important;
+  width: 100%;
+  top: 100% !important;
+  left: 0 !important;
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  z-index: 1100;
+  margin-top: 5px !important;
+  padding: 0.5rem 0;
+  text-align: center; /* Centra las opciones del submenú (ej. Cerrar sesión) */
+}
+
+.barra-lateral .dropdown-item {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center; /* Centra el texto dentro del item */
+}
+
+/* --- MENÚ DE NAVEGACIÓN INFERIOR --- */
+.barra-lateral nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.barra-lateral nav ul li {
+  margin: 0.8rem 0;
+  position: relative;
+}
+
+.barra-lateral nav ul li a {
+  color: #222;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.barra-lateral nav ul li a:hover {
+  background: linear-gradient(90deg, #007BFF, #00C6FF);
+  color: #fff;
+  transform: translateX(4px); 
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.contenido-desplegable {
+  list-style: none;
+  padding-left: 15px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.contenido-desplegable li a {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+}
+
+.contenido-desplegable.mostrar {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.alternar-menu {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(90deg, #FF6B00, #ff8c42);
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 12px;
+  z-index: 1100;
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.alternar-menu:hover {
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+}

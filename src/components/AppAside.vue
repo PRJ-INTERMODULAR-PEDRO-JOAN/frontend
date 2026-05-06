@@ -18,6 +18,13 @@
                 🛒
             </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link to="/wishlist" class="nav-link text-danger">❤️ Favoritos</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/mis-pedidos" class="nav-link">📦 Mis Pedidos</router-link>
+        </li>
         
         <li v-if="auth.user" class="nav-item dropdown ms-3" style="list-style: none; position: relative;">
             

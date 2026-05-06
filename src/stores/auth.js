@@ -15,24 +15,19 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true;
       this.errors = null;
 
-      // Limpieza preventiva
       localStorage.removeItem('token');
       this.token = null;
       this.user = null;
       delete axios.defaults.headers.common['Authorization'];
 
       try {
-        // Petición al backend
+        // AÑADIMOS /api/
         const response = await axios.post('/api/login', credentials);
         
-        // Guardar datos recibidos
         this.token = response.data.accessToken;
         this.user = response.data.user;
         
-        // Persistir Token
         localStorage.setItem('token', this.token);
-        
-        // Redirigir
         router.push('/dashboard'); 
         
       } catch (error) {
@@ -50,30 +45,23 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // NUEVA ACCIÓN PARA EL FLUJO DE GOOGLE
-        async loginWithToken(newToken) {
-            // 1. Guardamos el token en el estado y en LocalStorage
-            this.token = newToken;
-            localStorage.setItem('token', newToken);
+    async loginWithToken(newToken) {
+        this.token = newToken;
+        localStorage.setItem('token', newToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        await this.fetchUser();
+    },
 
-            // 2. Le decimos a Axios que use este token a partir de ahora
-            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-
-            // 3. Obtenemos el perfil del usuario desde Laravel
-            await this.fetchUser();
-        },
-
-    // OBTENER USUARIO (Para recargar la página)
+    // OBTENER USUARIO
     async fetchUser() {
       if (!this.token) return;
       
       this.loading = true;
       try {
-        // Laravel usará el token del header para identificar al usuario
+        // AÑADIMOS /api/
         const response = await axios.get('/api/user');
         this.user = response.data;
       } catch (error) {
-        // Si el token es inválido o expiró
         this.user = null;
         this.token = null;
         localStorage.removeItem('token');
@@ -86,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
     // LOGOUT
     async logout() {
         try {
-          // Intentamos enviar cookies por si acaso existen
+          // AÑADIMOS /api/
           await axios.post('/api/logout', {}, { withCredentials: true });
         } catch (error) {
           console.error('Error al cerrar sesión', error);
@@ -95,7 +83,6 @@ export const useAuthStore = defineStore('auth', {
           this.token = null;
           localStorage.removeItem('token');
           delete axios.defaults.headers.common['Authorization'];
-          
           router.push('/login'); 
         }
       }

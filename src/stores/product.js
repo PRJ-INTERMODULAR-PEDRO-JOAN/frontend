@@ -13,7 +13,7 @@ export const useProductStore = defineStore('product', {
       this.loading = true
       this.error = null
       try {
-        // Llama a la ruta definida en tu routes/api.php de Laravel
+        // AÑADIMOS /api/
         const response = await api.get('/api/products')
         this.products = response.data
       } catch (err) {

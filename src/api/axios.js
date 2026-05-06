@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: '', // Dejar vacío para usar el dominio actual y pasar por el Proxy
+    baseURL: '', // Lo dejamos vacío para que el proxy controle todo
     withCredentials: false, 
     headers: {
         'Accept': 'application/json',

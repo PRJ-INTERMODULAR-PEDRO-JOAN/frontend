@@ -9,6 +9,8 @@ import ProductsView from '../views/ProductsView.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import ProductEdit from '../views/ProductEdit.vue'
 import OAuthCallback from '../views/OAuthCallback.vue';
+import OrdersHistoryView from '../views/OrdersHistoryView.vue';
+import WishlistView from '../views/WishlistView.vue';
 
 // Importaciones del Carrito
 import CartView from '../views/CartView.vue'
@@ -61,6 +63,18 @@ const router = createRouter({
       path: '/oauth/callback',
       name: 'oauth-callback',
       component: OAuthCallback
+    },
+    {
+      path: '/mis-pedidos',
+      name: 'orders',
+      component: OrdersHistoryView,
+      meta: { requiresAuth: true } // Protegida
+    },
+    {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: WishlistView,
+      meta: { requiresAuth: true } // Protegida
     },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
