@@ -8,6 +8,7 @@ import GalleryView from '../views/GalleryView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import ProductEdit from '../views/ProductEdit.vue'
+import OAuthCallback from '../views/OAuthCallback.vue';
 
 // Importaciones del Carrito
 import CartView from '../views/CartView.vue'
@@ -55,6 +56,11 @@ const router = createRouter({
       name: 'order-success',
       component: OrderSuccessView, // Necesitarás crear este archivo
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/oauth/callback',
+      name: 'oauth-callback',
+      component: OAuthCallback
     },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]

@@ -50,6 +50,19 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    // NUEVA ACCIÓN PARA EL FLUJO DE GOOGLE
+        async loginWithToken(newToken) {
+            // 1. Guardamos el token en el estado y en LocalStorage
+            this.token = newToken;
+            localStorage.setItem('token', newToken);
+
+            // 2. Le decimos a Axios que use este token a partir de ahora
+            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+
+            // 3. Obtenemos el perfil del usuario desde Laravel
+            await this.fetchUser();
+        },
+
     // OBTENER USUARIO (Para recargar la página)
     async fetchUser() {
       if (!this.token) return;
