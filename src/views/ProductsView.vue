@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <main class="contenido-principal" style="padding-top: 50px; min-height: 100vh;">
+    <main class="contenido-principal" style="padding-top: 50px; min-height: 100vh; position: relative; padding-bottom: 80px;">
       <div class="container">
         
         <div class="row mb-5 gy-3 align-items-end">
@@ -52,6 +52,16 @@
         <div v-else :class="viewMode === 'grid' ? 'contenedor-productos' : 'contenedor-productos-lista'">
             <div v-for="product in filteredProducts" :key="product.id" class="tarjeta-producto shadow-sm" :class="[viewMode === 'list' ? 'tarjeta-lista' : '', product.stock <= 0 ? 'agotado' : '']">
                 
+                <button 
+                  class="btn btn-sm position-absolute rounded-pill fw-bold compare-btn z-3" 
+                  style="top: 15px; left: 15px;"
+                  :class="isComparing(product) ? 'btn-success text-white' : 'btn-light shadow-sm'"
+                  @click.stop="toggleCompare(product)"
+                >
+                  <span v-if="isComparing(product)">✅ Seleccionado</span>
+                  <span v-else>⚖️ Comparar</span>
+                </button>
+
                 <div v-if="product.stock <= 0" class="overlay-agotado"><span class="badge-agotado">AGOTADO</span></div>
                 
                 <div class="imagen-container">
@@ -75,6 +85,58 @@
         </div>
       </div>
     </main>
+
+    <transition name="slide-up">
+      <div v-if="compareList.length > 0" class="fixed-bottom compare-bar shadow-lg border-top py-3 px-4 d-flex justify-content-between align-items-center z-3">
+        <div class="d-flex align-items-center gap-3">
+          <span class="fs-4">⚖️</span>
+          <div>
+            <h6 class="mb-0 fw-bold text-white">Comparando ({{ compareList.length }}/2)</h6>
+            <small class="text-white-50">Selecciona 2 productos para comparar</small>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light rounded-pill" @click="clearCompare">Limpiar</button>
+          <button class="btn btn-success fw-bold rounded-pill shadow" :disabled="compareList.length < 2" data-bs-toggle="modal" data-bs-target="#compareModal">
+            Ver Comparativa
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <div class="modal fade" id="compareModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+          <div class="modal-header border-bottom-0 pb-0">
+            <h4 class="modal-title fw-bold">⚖️ Comparativa de Productos</h4>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4" v-if="compareList.length === 2">
+            <div class="row g-4">
+              <div class="col-6 text-center border-end" v-for="item in compareList" :key="item.id">
+                <img :src="getImagePath(item.image)" class="img-fluid rounded mb-3 shadow-sm" style="height: 250px; object-fit: contain;">
+                <span class="badge bg-secondary mb-2">{{ item.category || 'Maqueta' }}</span>
+                <h4 class="fw-bold">{{ item.name }}</h4>
+                <h3 class="text-success fw-bold mb-3">{{ formatPrice(item.price) }}</h3>
+                <p class="text-muted small px-3 text-start">{{ item.description }}</p>
+                
+                <ul class="list-group list-group-flush text-start mt-4 mb-4">
+                  <li class="list-group-item bg-transparent d-flex justify-content-between">
+                    <span class="fw-bold">Stock:</span>
+                    <span :class="item.stock > 0 ? 'text-success' : 'text-danger'">{{ item.stock }} uds.</span>
+                  </li>
+                </ul>
+
+                <router-link :to="`/products/${item.id}`" class="btn btn-primary rounded-pill w-100 fw-bold shadow-sm" data-bs-dismiss="modal">
+                  Comprar este
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </MainLayout>
 </template>
 
@@ -89,14 +151,27 @@ const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const sortOrder = ref('default');
-
-// --- MEJORA 2: MEMORIA DE VISTA ---
 const viewMode = ref(localStorage.getItem('viewMode') || 'grid');
 
-watch(viewMode, (newMode) => {
-  localStorage.setItem('viewMode', newMode);
-});
-// ----------------------------------
+watch(viewMode, (newMode) => localStorage.setItem('viewMode', newMode));
+
+// --- LÓGICA DEL MODO COMPARAR ---
+const compareList = ref([]);
+
+const isComparing = (prod) => compareList.value.some(p => p.id === prod.id);
+
+const toggleCompare = (prod) => {
+  const idx = compareList.value.findIndex(p => p.id === prod.id);
+  if (idx > -1) {
+    compareList.value.splice(idx, 1);
+  } else {
+    if (compareList.value.length < 2) compareList.value.push(prod);
+    else alert("Solo puedes comparar 2 productos a la vez. Quita uno para añadir otro.");
+  }
+};
+
+const clearCompare = () => compareList.value = [];
+// --------------------------------
 
 const uniqueCategories = computed(() => {
   const categories = products.value.map(p => p.category).filter(cat => cat != null && cat !== '');
@@ -148,4 +223,19 @@ onMounted(fetchProducts);
   .tarjeta-lista .imagen-maqueta { height: 250px; }
   .tarjeta-lista .info-container { align-items: center !important; }
 }
+
+/* CSS COMPARADOR */
+.compare-btn { opacity: 0.8; transition: all 0.2s; }
+.compare-btn:hover, .btn-success { opacity: 1; transform: scale(1.05); }
+.compare-bar { background-color: #1a1a1a; }
+.slide-up-enter-active, .slide-up-leave-active { transition: all 0.3s ease-out; }
+.slide-up-enter-from, .slide-up-leave-to { transform: translateY(100%); opacity: 0; }
+</style>
+
+<style>
+/* Compatibilidad Modal y Comparador Modo Oscuro */
+[data-bs-theme="dark"] .compare-bar { border-top-color: #383838 !important; }
+[data-bs-theme="dark"] .modal-content { background-color: #242424 !important; border: 1px solid #383838 !important; color: #f8f9fa !important;}
+[data-bs-theme="dark"] .list-group-item { color: #f8f9fa !important; border-color: #383838 !important; }
+[data-bs-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
 </style>

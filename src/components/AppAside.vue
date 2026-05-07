@@ -32,11 +32,17 @@
       </div>
 
       <ul class="iconos-utilidad">
-        <li>
-          <a href="#" @click.prevent="toggleDarkMode" class="text-decoration-none d-flex align-items-center justify-content-center fw-bold">
-            {{ isDarkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro' }}
-          </a>
+        
+        <li class="d-flex align-items-center justify-content-between px-3 py-2 rounded-3 border theme-toggle-box mb-3 shadow-sm" style="background-color: #f8f9fa;">
+          <span class="fw-bold d-flex align-items-center gap-2 text-dark">
+            <span v-if="!isDarkMode" class="theme-icon">☀️ Claro</span>
+            <span v-else class="theme-icon">🌙 Oscuro</span>
+          </span>
+          <div class="form-check form-switch m-0 p-0 d-flex align-items-center">
+            <input class="form-check-input ms-0 custom-switch shadow-none" type="checkbox" role="switch" :checked="isDarkMode" @change="toggleDarkMode" style="cursor: pointer; width: 45px; height: 24px;">
+          </div>
         </li>
+
         <li>
           <a href="#" class="position-relative text-decoration-none d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#miniCart" @click="closeMenu">
             🛒 Mi Carrito
@@ -61,7 +67,7 @@
         </li>
       </ul>
       
-      <h3 class="etiqueta-menu">Menú</h3>
+      <h3 class="etiqueta-menu mt-3">Menú</h3>
       <nav>
         <ul>
           <li><router-link to="/" @click="closeMenu">Inicio</router-link></li>
@@ -77,7 +83,6 @@
           <li><router-link to="/#como-funciona" @click="closeMenu">Diseñar Maquetas</router-link></li>
           <li><router-link to="/gallery" @click="closeMenu">Galería de Proyectos</router-link></li>
           <li><router-link to="/#impresoras" @click="closeMenu">Impresoras 3D</router-link></li>
-          
           <li><a href="http://localhost:5678/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" target="_blank" @click="closeMenu">Formulario Contacto</a></li>
         </ul>
       </nav>
@@ -179,7 +184,7 @@ const liveSearchResults = computed(() => {
 const goToProduct = (id) => {
   liveSearchQuery.value = ''; 
   closeMenu(); 
-  router.push(`/products/${id}`); // Con "s" corregido
+  router.push(`/products/${id}`);
 };
 
 const handleLogout = async () => { await auth.logout(); window.location.href = '/'; };
@@ -201,7 +206,6 @@ const getImagePath = (img) => img ? (img.startsWith('http') ? img : `/img/${img}
 
 onMounted(async () => {
     auth.fetchUser();
-    
     try {
       const res = await axios.get('/api/products');
       allProducts.value = res.data;
@@ -231,10 +235,13 @@ onMounted(async () => {
 .barra-lateral nav ul li a { color: #222; text-decoration: none; font-weight: 500; display: block; padding: 0.5rem 1rem; border-radius: 8px; }
 .alternar-menu { position: fixed; top: 10px; right: 10px; z-index: 1100; background: linear-gradient(90deg, #FF6B00, #ff8c42); color: #fff; border: none; padding: 12px 16px; border-radius: 12px; font-size: 20px; }
 .dropdown-menu.show { display: block; position: absolute; background: white; border: 1px solid #ddd; width: 100%; z-index: 2000; }
+
+/* Transición icono theme */
+.theme-icon { transition: all 0.3s ease; }
 </style>
 
 <style>
-/* CSS MODO OSCURO GLOBAL (Mantenido intacto) */
+/* CSS MODO OSCURO GLOBAL */
 [data-bs-theme="dark"] body, [data-bs-theme="dark"] #app, [data-bs-theme="dark"] main, [data-bs-theme="dark"] .product-detail-container, [data-bs-theme="dark"] .layout-limpio { background-color: #121212 !important; color: #e0e0e0 !important; }
 [data-bs-theme="dark"] .barra-lateral { background-color: #161616 !important; border-left-color: #FF6B00 !important; box-shadow: -6px 0 25px rgba(0, 0, 0, 0.5) !important; }
 [data-bs-theme="dark"] .barra-lateral nav ul li a { color: #ffffff !important; }
@@ -252,8 +259,11 @@ onMounted(async () => {
 [data-bs-theme="dark"] .input-group .form-control { background-color: #121212 !important; color: #fff !important; border-color: #444 !important; }
 [data-bs-theme="dark"] .input-group .btn-outline-secondary, [data-bs-theme="dark"] .input-group-text { background-color: #1a1a1a !important; color: #fff !important; border-color: #444 !important; }
 
-/* Soporte para Live Search */
 [data-bs-theme="dark"] .live-search-results { background-color: #242424 !important; border-color: #333 !important; }
 [data-bs-theme="dark"] .live-search-results .list-group-item { background-color: #242424 !important; border-bottom: 1px solid #383838 !important; color: #fff !important; }
 [data-bs-theme="dark"] .live-search-results .list-group-item:hover { background-color: #383838 !important; }
+
+/* Soporte para Switch de Tema */
+[data-bs-theme="dark"] .theme-toggle-box { background-color: #242424 !important; border-color: #383838 !important; }
+[data-bs-theme="dark"] .custom-switch:checked { background-color: #FF6B00; border-color: #FF6B00; }
 </style>
