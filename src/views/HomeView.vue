@@ -269,21 +269,468 @@ const truncate = (text, length) => {
 const recentlyViewed = ref([]);
 
 onMounted(() => {
+
     fetchProducts();
-    recentlyViewed.value = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
+
+    recentlyViewed.value = JSON.parse(
+        localStorage.getItem('recently_viewed') || '[]'
+    );
+
+    // =========================
+    // CSS OFICIAL N8N
+    // =========================
 
     const link = document.createElement('link');
+
     link.rel = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
+
+    link.href =
+        'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
+
     document.head.appendChild(link);
 
+    // =========================
+    // ESTILOS PERSONALIZADOS
+    // =========================
+
+    const style = document.createElement('style');
+
+    style.innerHTML = `
+
+    /* =========================
+       VARIABLES
+    ========================= */
+
+    :root {
+
+        --chat--color-primary: #ff6b00 !important;
+        --chat--color-primary-shade-50: #ff8c42 !important;
+
+        --chat--window--width: 420px !important;
+        --chat--window--height: 700px !important;
+
+        --chat--border-radius: 26px !important;
+
+        --chat--message--bot--background: #1e293b !important;
+        --chat--message--user--background: #ff6b00 !important;
+    }
+
+    /* =========================
+       RESET
+    ========================= */
+
+    .n8n-chat,
+    .n8n-chat * {
+
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       WINDOW
+    ========================= */
+
+    .n8n-chat .chat-window {
+
+        background: #020617 !important;
+
+        border-radius: 26px !important;
+
+        overflow: hidden !important;
+
+        border:
+            1px solid rgba(255,255,255,0.06) !important;
+
+        box-shadow:
+            0 20px 60px rgba(0,0,0,0.45) !important;
+    }
+
+    /* =========================
+       WRAPPERS
+    ========================= */
+
+    .n8n-chat .chat-layout,
+    .n8n-chat .chat-wrapper {
+
+        background: #020617 !important;
+
+        height: 100% !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .n8n-chat .chat-header {
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff6b00,
+                #ff8c42
+            ) !important;
+
+        border: none !important;
+
+        padding: 28px !important;
+    }
+
+    .n8n-chat .chat-heading h1 {
+
+        color: white !important;
+
+        font-size: 42px !important;
+
+        font-weight: 900 !important;
+
+        text-transform: uppercase !important;
+    }
+
+    .n8n-chat .chat-header p {
+
+        color:
+            rgba(255,255,255,0.9) !important;
+
+        font-size: 16px !important;
+    }
+
+    /* =========================
+       BODY
+    ========================= */
+
+    .n8n-chat .chat-body {
+
+        flex: 1 !important;
+
+        overflow-y: auto !important;
+
+        background:
+            linear-gradient(
+                to bottom,
+                #0f172a,
+                #020617
+            ) !important;
+
+        padding: 24px !important;
+    }
+
+    /* =========================
+       LISTA MENSAJES
+    ========================= */
+
+    .n8n-chat .chat-messages-list {
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        gap: 18px !important;
+    }
+
+    /* =========================
+       MENSAJES
+    ========================= */
+
+    .n8n-chat .chat-message {
+
+        background: transparent !important;
+
+        border: none !important;
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+    }
+
+    /* BOT */
+
+    .n8n-chat .chat-message-from-bot {
+
+        display: flex !important;
+
+        justify-content: flex-start !important;
+    }
+
+    .n8n-chat .chat-message-from-bot .chat-message-markdown {
+
+        background: #1e293b !important;
+
+        color: white !important;
+
+        padding: 16px 18px !important;
+
+        border-radius:
+            20px 20px 20px 8px !important;
+
+        max-width: 80% !important;
+
+        line-height: 1.5 !important;
+
+        box-shadow:
+            0 8px 20px rgba(0,0,0,0.25) !important;
+    }
+
+    /* USER */
+
+    .n8n-chat .chat-message-from-user {
+
+        display: flex !important;
+
+        justify-content: flex-end !important;
+    }
+
+    .n8n-chat .chat-message-from-user .chat-message-markdown {
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff6b00,
+                #ff8c42
+            ) !important;
+
+        color: white !important;
+
+        padding: 16px 18px !important;
+
+        border-radius:
+            20px 20px 8px 20px !important;
+
+        max-width: 80% !important;
+
+        line-height: 1.5 !important;
+
+        box-shadow:
+            0 8px 20px rgba(255,107,0,0.25) !important;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .n8n-chat .chat-footer {
+
+        background: #0f172a !important;
+
+        border-top:
+            1px solid rgba(255,255,255,0.06) !important;
+
+        padding: 16px !important;
+    }
+
+    /* =========================
+       INPUT WRAPPERS
+    ========================= */
+
+    .n8n-chat .chat-input,
+    .n8n-chat .chat-inputs,
+    .n8n-chat .chat-inputs-controls {
+
+        background: transparent !important;
+
+        border: none !important;
+
+        box-shadow: none !important;
+    }
+
+    .n8n-chat .chat-inputs {
+
+        display: flex !important;
+
+        align-items: center !important;
+
+        gap: 12px !important;
+    }
+
+    /* =========================
+       TEXTAREA
+    ========================= */
+
+    .n8n-chat textarea {
+
+        flex: 1 !important;
+
+        background: #1e293b !important;
+
+        color: white !important;
+
+        border:
+            2px solid rgba(255,255,255,0.06) !important;
+
+        border-radius: 18px !important;
+
+        padding: 16px !important;
+
+        min-height: 58px !important;
+
+        resize: none !important;
+
+        outline: none !important;
+    }
+
+    .n8n-chat textarea::placeholder {
+
+        color:
+            rgba(255,255,255,0.5) !important;
+    }
+
+    .n8n-chat textarea:focus {
+
+        border-color: #ff6b00 !important;
+
+        box-shadow:
+            0 0 0 4px rgba(255,107,0,0.15) !important;
+    }
+
+    /* =========================
+       SEND BUTTON
+    ========================= */
+
+    .n8n-chat .chat-input-send-button {
+
+        width: 58px !important;
+        height: 58px !important;
+
+        border-radius: 16px !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff6b00,
+                #ff8c42
+            ) !important;
+
+        border: none !important;
+
+        color: white !important;
+
+        transition: .25s ease !important;
+    }
+
+    .n8n-chat .chat-input-send-button:hover {
+
+        transform: scale(1.05);
+
+        box-shadow:
+            0 10px 25px rgba(255,107,0,0.35);
+    }
+
+    /* =========================
+       TOGGLE BUTTON
+    ========================= */
+
+    .n8n-chat .chat-window-toggle {
+
+        width: 72px !important;
+        height: 72px !important;
+
+        border-radius: 50% !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ff6b00,
+                #ff8c42
+            ) !important;
+
+        color: white !important;
+
+        box-shadow:
+            0 12px 35px rgba(255,107,0,0.35) !important;
+    }
+
+    /* =========================
+       SCROLLBAR
+    ========================= */
+
+    .n8n-chat ::-webkit-scrollbar {
+
+        width: 8px;
+    }
+
+    .n8n-chat ::-webkit-scrollbar-thumb {
+
+        background: #ff6b00;
+
+        border-radius: 999px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 768px) {
+
+        .n8n-chat .chat-window {
+
+            width: 100vw !important;
+
+            height: 100vh !important;
+
+            border-radius: 0 !important;
+        }
+    }
+
+    `;
+
+    document.head.appendChild(style);
+
+    // =========================
+    // IMPORT CHAT N8N
+    // =========================
+
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
+
         .then(module => {
+
             module.createChat({
-                webhookUrl: '/n8n/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat'
+
+                webhookUrl:
+                    '/n8n/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat',
+
+                mode: 'window',
+
+                showWelcomeScreen: true,
+
+                defaultLanguage: 'es',
+
+                initialMessages: [
+                    '¡Hola! 👋',
+                    'Soy tu asistente IA. ¿En qué puedo ayudarte?'
+                ],
+
+                i18n: {
+                    es: {
+                        title: 'Asistente IA 🚀',
+
+                        subtitle:
+                            'Disponible 24/7 para ayudarte',
+
+                        footer: '',
+
+                        getStarted:
+                            'Nueva conversación',
+
+                        inputPlaceholder:
+                            'Escribe tu mensaje...'
+                    }
+                }
+
             });
+
         })
-        .catch(err => { console.error('Error cargando el chatbot de n8n:', err); });
+
+        .catch(err => {
+
+            console.error(
+                'Error cargando el chatbot de n8n:',
+                err
+            );
+
+        });
+
 });
 </script>
 

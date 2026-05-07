@@ -38,4 +38,7 @@ import { RouterView } from 'vue-router'
 body {
   overflow-x: hidden;
 }
+
+
+
 </style>
