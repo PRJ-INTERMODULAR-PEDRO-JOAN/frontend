@@ -113,8 +113,7 @@
                                 <p class="mb-1 text-secondary">{{ comment.text }}</p>
 
                                 <div v-if="auth.user && (auth.user.id === comment.user_id || auth.user.role === 'admin')" class="mt-2">
-                                    <button @click="deleteComment(comment.id)" class="btn btn-sm btn-link text-danger p-0 text-decoration-none fw-bold">🗑️ Borrar</button>
-                                </div>
+                                <button @click="deleteComment(comment.id)" class="btn btn-sm btn-link text-danger p-0 text-decoration-none">🗑️ Borrar</button>                                </div>
                             </div>
                         </div>
                     </div>
@@ -278,14 +277,13 @@ const submitComment = async () => {
 };
 
 const deleteComment = async (id) => {
-    if(!confirm("¿Borrar?")) return;
-    try {
-        await axios.delete(`/api/comments/${id}`);
-        const res = await axios.get(`/api/products/${product.value.id}/comments`);
-        comments.value = res.data;
-    } catch (e) { alert("Error al borrar."); }
-};
-
+      if(!confirm("¿Borrar?")) return;
+      try {
+          await axios.delete(`/api/comments/${id}`);
+          const res = await axios.get(`/api/products/${product.value.id}/comments`);
+          comments.value = res.data;
+      } catch (e) { alert("Error al borrar."); }
+  };
 const handleAddToCart = () => {
     if (canAddToCart.value) {
         cartStore.addToCart(product.value);
