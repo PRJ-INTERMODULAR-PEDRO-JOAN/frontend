@@ -32,12 +32,8 @@
               </div>
               <div class="col-md-2 d-flex justify-content-end">
                 <div class="btn-group shadow-sm w-100">
-                  <button class="btn" :class="viewMode === 'grid' ? 'btn-dark' : 'btn-outline-secondary'" @click="viewMode = 'grid'" title="Vista Cuadrícula">
-                    🔲
-                  </button>
-                  <button class="btn" :class="viewMode === 'list' ? 'btn-dark' : 'btn-outline-secondary'" @click="viewMode = 'list'" title="Vista Lista">
-                    ☰
-                  </button>
+                  <button class="btn" :class="viewMode === 'grid' ? 'btn-dark' : 'btn-outline-secondary'" @click="viewMode = 'grid'" title="Vista Cuadrícula">🔲</button>
+                  <button class="btn" :class="viewMode === 'list' ? 'btn-dark' : 'btn-outline-secondary'" @click="viewMode = 'list'" title="Vista Lista">☰</button>
                 </div>
               </div>
             </div>
@@ -75,7 +71,6 @@
                       {{ product.stock <= 0 ? 'Sin Stock' : 'Ver Detalles' }}
                   </router-link>
                 </div>
-
             </div>
         </div>
       </div>
@@ -84,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import MainLayout from '../layouts/MainLayout.vue';
 import axios from '../api/axios'; 
 
@@ -94,7 +89,14 @@ const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const sortOrder = ref('default');
-const viewMode = ref('grid'); // ESTADO PARA VISTA (grid o list)
+
+// --- MEJORA 2: MEMORIA DE VISTA ---
+const viewMode = ref(localStorage.getItem('viewMode') || 'grid');
+
+watch(viewMode, (newMode) => {
+  localStorage.setItem('viewMode', newMode);
+});
+// ----------------------------------
 
 const uniqueCategories = computed(() => {
   const categories = products.value.map(p => p.category).filter(cat => cat != null && cat !== '');
@@ -108,10 +110,8 @@ const filteredProducts = computed(() => {
     result = result.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
   }
   if (selectedCategory.value) result = result.filter(p => p.category === selectedCategory.value);
-  
   if (sortOrder.value === 'low') result.sort((a, b) => a.price - b.price);
   else if (sortOrder.value === 'high') result.sort((a, b) => b.price - a.price);
-
   return result;
 });
 
@@ -125,7 +125,6 @@ onMounted(fetchProducts);
 </script>
 
 <style scoped>
-/* ESTILOS GLOBALES TARJETAS */
 .btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; transition: 0.2s; }
 .btn-primary:hover { transform: scale(1.02); }
 .tarjeta-producto { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 15px; transition: 0.3s; position: relative; }
@@ -133,19 +132,16 @@ onMounted(fetchProducts);
 .overlay-agotado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 5; display: flex; align-items: center; justify-content: center; }
 .badge-agotado { background: #dc3545; color: white; padding: 10px 20px; font-weight: bold; transform: rotate(-15deg); border-radius: 5px; }
 
-/* MODO CUADRÍCULA (GRID) */
 .contenedor-productos { display: grid; gap: 28px; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
 .contenedor-productos .tarjeta-producto { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .contenedor-productos .imagen-maqueta { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; }
 
-/* MODO LISTA (HORIZONTAL) */
 .contenedor-productos-lista { display: flex; flex-direction: column; gap: 20px; }
 .tarjeta-lista { display: flex; flex-direction: row !important; align-items: stretch !important; text-align: left !important; padding: 20px; }
 .tarjeta-lista .imagen-container { flex: 0 0 250px; margin-right: 25px; }
 .tarjeta-lista .imagen-maqueta { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
 .tarjeta-lista .info-container { align-items: flex-start !important; justify-content: center; }
 
-/* Ajuste móvil para modo lista */
 @media (max-width: 768px) {
   .tarjeta-lista { flex-direction: column !important; text-align: center !important; }
   .tarjeta-lista .imagen-container { flex: auto; margin-right: 0; margin-bottom: 15px; }

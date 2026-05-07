@@ -4,7 +4,6 @@
 
     <aside class="barra-lateral" :class="{ 'activa': menuAbierto }">
       <div class="barra-lateral-cabecera">
-        <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
         <div class="logo">
           <img src="/img/logoPrintHub.jpeg" alt="Logo de PrintHub" />
         </div>
@@ -78,6 +77,8 @@
           <li><router-link to="/#como-funciona" @click="closeMenu">Diseñar Maquetas</router-link></li>
           <li><router-link to="/gallery" @click="closeMenu">Galería de Proyectos</router-link></li>
           <li><router-link to="/#impresoras" @click="closeMenu">Impresoras 3D</router-link></li>
+          
+          <li><a href="http://localhost:5678/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" target="_blank" @click="closeMenu">Formulario Contacto</a></li>
         </ul>
       </nav>
     </aside>
@@ -166,22 +167,20 @@ const navigateTo = (path) => {
   router.push(path);
 };
 
-// --- LÓGICA DEL BUSCADOR PREDICTIVO ---
 const liveSearchQuery = ref('');
 const allProducts = ref([]);
 
 const liveSearchResults = computed(() => {
   if (liveSearchQuery.value.trim().length < 2) return [];
   const q = liveSearchQuery.value.toLowerCase();
-  return allProducts.value.filter(p => p.name.toLowerCase().includes(q)).slice(0, 5); // Mostramos máximo 5
+  return allProducts.value.filter(p => p.name.toLowerCase().includes(q)).slice(0, 5);
 });
 
 const goToProduct = (id) => {
-  liveSearchQuery.value = ''; // Limpiamos buscador
-  closeMenu(); // Cerramos menú
-  router.push(`/products/${id}`); // Vamos al producto
+  liveSearchQuery.value = ''; 
+  closeMenu(); 
+  router.push(`/products/${id}`); // Con "s" corregido
 };
-// --------------------------------------
 
 const handleLogout = async () => { await auth.logout(); window.location.href = '/'; };
 
@@ -203,11 +202,10 @@ const getImagePath = (img) => img ? (img.startsWith('http') ? img : `/img/${img}
 onMounted(async () => {
     auth.fetchUser();
     
-    // Cargamos todos los productos en segundo plano para el buscador rápido
     try {
       const res = await axios.get('/api/products');
       allProducts.value = res.data;
-    } catch (e) { console.error("Error al precargar productos para búsqueda"); }
+    } catch (e) { console.error("Error al precargar productos"); }
 
     const savedTheme = localStorage.getItem('theme') || 'light';
     isDarkMode.value = savedTheme === 'dark';
@@ -221,8 +219,22 @@ onMounted(async () => {
 });
 </script>
 
+<style scoped>
+.d-none { display: none !important; }
+.barra-lateral { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: #ffffff; color: #1a1a1a; padding: 2rem 1rem; transition: right 0.4s ease; z-index: 1000; box-shadow: -6px 0 25px rgba(0, 0, 0, 0.08); border-left: 3px solid #FF6B00; border-radius: 16px 0 0 16px; overflow-y: auto; }
+.barra-lateral.activa { right: 0; }
+.iconos-utilidad { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; padding: 0; }
+.iconos-utilidad li a { color: #222; text-decoration: none; font-weight: 500; font-size: 1rem; display: block; padding: 0.6rem 1rem; border-radius: 10px; background-color: #f8f9fa; border: 1px solid #eaeaea; text-align: center; }
+.iconos-utilidad li a:hover { background: linear-gradient(90deg, #007BFF, #00C6FF); color: #fff !important; }
+.barra-lateral nav ul { list-style: none; padding: 0; }
+.barra-lateral nav ul li { margin: 1rem 0; }
+.barra-lateral nav ul li a { color: #222; text-decoration: none; font-weight: 500; display: block; padding: 0.5rem 1rem; border-radius: 8px; }
+.alternar-menu { position: fixed; top: 10px; right: 10px; z-index: 1100; background: linear-gradient(90deg, #FF6B00, #ff8c42); color: #fff; border: none; padding: 12px 16px; border-radius: 12px; font-size: 20px; }
+.dropdown-menu.show { display: block; position: absolute; background: white; border: 1px solid #ddd; width: 100%; z-index: 2000; }
+</style>
+
 <style>
-/* 1. Fondos y Contenedores */
+/* CSS MODO OSCURO GLOBAL (Mantenido intacto) */
 [data-bs-theme="dark"] body, [data-bs-theme="dark"] #app, [data-bs-theme="dark"] main, [data-bs-theme="dark"] .product-detail-container, [data-bs-theme="dark"] .layout-limpio { background-color: #121212 !important; color: #e0e0e0 !important; }
 [data-bs-theme="dark"] .barra-lateral { background-color: #161616 !important; border-left-color: #FF6B00 !important; box-shadow: -6px 0 25px rgba(0, 0, 0, 0.5) !important; }
 [data-bs-theme="dark"] .barra-lateral nav ul li a { color: #ffffff !important; }
@@ -237,21 +249,11 @@ onMounted(async () => {
 [data-bs-theme="dark"] .dropdown-item:hover { background-color: #383838 !important; }
 [data-bs-theme="dark"] footer, [data-bs-theme="dark"] .app-footer { background-color: #0a0a0a !important; border-top: 1px solid #2c2c2c !important; }
 [data-bs-theme="dark"] footer a, [data-bs-theme="dark"] footer p { color: #e0e0e0 !important; }
-/* Estilos nuevos para input de cantidad */
 [data-bs-theme="dark"] .input-group .form-control { background-color: #121212 !important; color: #fff !important; border-color: #444 !important; }
-[data-bs-theme="dark"] .input-group .btn-outline-secondary { color: #fff !important; border-color: #444 !important; }
-</style>
+[data-bs-theme="dark"] .input-group .btn-outline-secondary, [data-bs-theme="dark"] .input-group-text { background-color: #1a1a1a !important; color: #fff !important; border-color: #444 !important; }
 
-<style scoped>
-.d-none { display: none !important; }
-.barra-lateral { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: #ffffff; color: #1a1a1a; padding: 2rem 1rem; transition: right 0.4s ease; z-index: 1000; box-shadow: -6px 0 25px rgba(0, 0, 0, 0.08); border-left: 3px solid #FF6B00; border-radius: 16px 0 0 16px; overflow-y: auto; }
-.barra-lateral.activa { right: 0; }
-.iconos-utilidad { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; padding: 0; }
-.iconos-utilidad li a { color: #222; text-decoration: none; font-weight: 500; font-size: 1rem; display: block; padding: 0.6rem 1rem; border-radius: 10px; background-color: #f8f9fa; border: 1px solid #eaeaea; text-align: center; }
-.iconos-utilidad li a:hover { background: linear-gradient(90deg, #007BFF, #00C6FF); color: #fff !important; }
-.barra-lateral nav ul { list-style: none; padding: 0; }
-.barra-lateral nav ul li { margin: 1rem 0; }
-.barra-lateral nav ul li a { color: #222; text-decoration: none; font-weight: 500; display: block; padding: 0.5rem 1rem; border-radius: 8px; }
-.alternar-menu { position: fixed; top: 10px; right: 10px; z-index: 1100; background: linear-gradient(90deg, #FF6B00, #ff8c42); color: #fff; border: none; padding: 12px 16px; border-radius: 12px; font-size: 20px; }
-.dropdown-menu.show { display: block; position: absolute; background: white; border: 1px solid #ddd; width: 100%; z-index: 2000; }
+/* Soporte para Live Search */
+[data-bs-theme="dark"] .live-search-results { background-color: #242424 !important; border-color: #333 !important; }
+[data-bs-theme="dark"] .live-search-results .list-group-item { background-color: #242424 !important; border-bottom: 1px solid #383838 !important; color: #fff !important; }
+[data-bs-theme="dark"] .live-search-results .list-group-item:hover { background-color: #383838 !important; }
 </style>
