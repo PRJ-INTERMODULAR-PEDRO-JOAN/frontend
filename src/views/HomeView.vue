@@ -188,6 +188,34 @@
         </div>
       </section>
 
+       <section v-if="recentlyViewed.length > 0" class="productos-destacados pt-5 bg-light">
+        <div class="container">
+          <h1>Vistos Recientemente 👁️</h1>
+          
+          <div class="contenedor-productos mt-4">
+            <div v-for="product in recentlyViewed" :key="product.id" class="tarjeta-producto" :class="{ 'agotado': product.stock <= 0 }">
+              
+              <div v-if="product.stock <= 0" class="overlay-agotado">
+                <span class="badge-agotado">AGOTADO</span>
+              </div>
+
+              <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
+
+              <h3>{{ product.name }}</h3>
+              <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
+
+              <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
+                <span class="producto-precio fw-bold fs-5">{{ formatPrice(product.price) }}</span>
+              </div>
+
+              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2 fw-bold btn-outline-dark">
+                 Volver a ver
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </MainLayout>
 </template>
@@ -250,9 +278,17 @@ const truncate = (text, length) => {
     return text.length > length ? text.substring(0, length) + '...' : text;
 };
 
-// --- LIFECYCLE ---
+// Añade esto donde tienes const products = ref([]);
+const recentlyViewed = ref([]);
+
+// Añade esto dentro del onMounted(() => { ... })
 onMounted(() => {
     fetchProducts();
+    
+    // Cargar los productos vistos recientemente de la memoria local
+    recentlyViewed.value = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
+
+    // ... (aquí sigue lo del chatbot n8n que ya tienes)
 
     // --- CHATBOT N8N CON PROXY (Sin CORS) ---
     const link = document.createElement('link');

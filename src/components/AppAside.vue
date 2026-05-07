@@ -1,17 +1,9 @@
 <template>
   <div>
-    <button 
-      class="alternar-menu" 
-      :class="{ 'd-none': isCartOpen }" 
-      @click="toggleMenu"
-    >
-      ☰
-    </button>
+    <button class="alternar-menu" :class="{ 'd-none': isCartOpen }" @click="toggleMenu">☰</button>
 
     <aside class="barra-lateral" :class="{ 'activa': menuAbierto }">
-      
       <div class="barra-lateral-cabecera">
-        <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
         <div class="logo">
             <img src="/img/logoPrintHub.jpeg" alt="Logo de PrintHub" />
         </div>
@@ -19,18 +11,22 @@
 
       <ul class="iconos-utilidad">
         <li>
-          <a href="#" class="position-relative text-decoration-none d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#miniCart" @click="closeMenu">
-            🛒 Mi Carrito
-            <span v-if="cartCount > 0" class="badge bg-danger ms-2 rounded-pill">
-              {{ cartCount }}
-            </span>
+          <a href="#" @click.prevent="toggleDarkMode" class="text-decoration-none d-flex align-items-center justify-content-center fw-bold">
+            {{ isDarkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro' }}
           </a>
         </li>
 
         <li>
+          <a href="#" class="position-relative text-decoration-none d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#miniCart" @click="closeMenu">
+            🛒 Mi Carrito
+            <span v-if="cartCount > 0" class="badge bg-danger ms-2 rounded-pill">{{ cartCount }}</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
           <router-link to="/wishlist" class="nav-link text-danger" @click="closeMenu">❤️ Favoritos</router-link>
         </li>
-        <li>
+        <li class="nav-item">
           <router-link to="/mis-pedidos" class="nav-link" @click="closeMenu">📦 Mis Pedidos</router-link>
         </li>
         
@@ -53,7 +49,6 @@
       <nav>
         <ul>
             <li><router-link to="/" @click="closeMenu">Inicio</router-link></li>
-            
             <li class="desplegable">
                 <a href="#" @click.prevent="toggleSubmenu">Maquetas Personalizadas ▾</a>
                 <ul class="contenido-desplegable" :class="{ 'mostrar': submenuAbierto }">
@@ -62,20 +57,12 @@
                     <li><router-link to="/products?cat=automoviles" @click="closeMenu">Automóviles</router-link></li>
                 </ul>
             </li>
-
             <li><router-link to="/products" @click="closeMenu">Todos Nuestros Productos</router-link></li>
             <li><router-link to="/#como-funciona" @click="closeMenu">Diseñar Maquetas</router-link></li>
             <li><router-link to="/gallery" @click="closeMenu">Galería de Proyectos</router-link></li>
             <li><router-link to="/#impresoras" @click="closeMenu">Impresoras 3D</router-link></li>
-            <li>
-              <a href="http://localhost:5678/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" target="_blank" @click="closeMenu">
-                Formulario Contacto
-              </a>
-            </li>
-             
-            <li v-if="auth.user && auth.user.role === 'admin'">
-                <a href="http://localhost/admin/import" style="color: black;" @click="closeMenu">Importar Productos</a>
-            </li>
+            <li><a href="http://localhost:5678/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" target="_blank" @click="closeMenu">Formulario Contacto</a></li>
+            <li v-if="auth.user && auth.user.role === 'admin'"><a href="http://localhost/admin/import" style="color: black;" @click="closeMenu">Importar Productos</a></li>
         </ul>
       </nav>
     </aside>
@@ -86,14 +73,12 @@
       <h5 class="offcanvas-title fw-bold">Resumen de Compra 🛍️</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    
     <div class="offcanvas-body">
       <div v-if="cartItems.length === 0" class="text-center py-5">
         <div class="fs-1 mb-3">🧺</div>
         <p class="text-muted">Tu carrito está vacío.</p>
         <button class="btn btn-primary" @click="navigateTo('/products')">Ver Productos</button>
       </div>
-
       <div v-else>
         <div v-for="item in cartItems" :key="item.id" class="card mb-3 border-0 shadow-sm overflow-hidden">
           <div class="row g-0 align-items-center">
@@ -112,7 +97,6 @@
         </div>
       </div>
     </div>
-
     <div v-if="cartItems.length > 0" class="offcanvas-footer p-4 border-top bg-light">
       <div class="d-flex justify-content-between mb-3">
         <span class="h5">Total:</span>
@@ -136,18 +120,25 @@ const auth = useAuthStore();
 const cartStore = useCartStore();
 const router = useRouter();
 
-// Estados
 const menuAbierto = ref(false);
 const submenuAbierto = ref(false);
 const usuarioMenuAbierto = ref(false);
 const isCartOpen = ref(false);
+const isDarkMode = ref(false); // Estado del modo oscuro
 
 const toggleMenu = () => { menuAbierto.value = !menuAbierto.value; };
 const toggleSubmenu = () => { submenuAbierto.value = !submenuAbierto.value; };
 const toggleUserMenu = () => { usuarioMenuAbierto.value = !usuarioMenuAbierto.value; };
 const closeMenu = () => { menuAbierto.value = false; };
 
-// Navegación manual para cerrar el carrito
+// FUNCIÓN MODO OSCURO
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value;
+  const theme = isDarkMode.value ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-bs-theme', theme); // Magia de Bootstrap 5.3
+  localStorage.setItem('theme', theme); // Guardar preferencia
+};
+
 const navigateTo = (path) => {
   const el = document.getElementById('miniCart');
   const instance = bootstrap.Offcanvas.getInstance(el);
@@ -157,17 +148,21 @@ const navigateTo = (path) => {
 
 const handleLogout = async () => { await auth.logout(); window.location.href = '/'; };
 
-// Carrito
 const cartItems = computed(() => cartStore.cart || []);
 const cartCount = computed(() => cartStore.totalItems || 0);
 const totalPrice = computed(() => cartStore.totalPrice || 0);
-
 const removeItem = (id) => cartStore.removeFromCart(id);
 const formatPrice = (p) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
 const getImagePath = (img) => img ? (img.startsWith('http') ? img : `/img/${img}`) : '/img/marcaDeAgua.png';
 
 onMounted(() => {
     auth.fetchUser();
+    
+    // Cargar preferencia de modo oscuro
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    isDarkMode.value = savedTheme === 'dark';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+
     const el = document.getElementById('miniCart');
     if (el) {
         el.addEventListener('show.bs.offcanvas', () => { isCartOpen.value = true; });
@@ -175,6 +170,162 @@ onMounted(() => {
     }
 });
 </script>
+
+<style>
+/* =========================================================
+   NIVEL 1: FONDO BASE (El más oscuro)
+   ========================================================= */
+[data-bs-theme="dark"] body, 
+[data-bs-theme="dark"] #app,
+[data-bs-theme="dark"] main,
+[data-bs-theme="dark"] .contenido-principal,
+[data-bs-theme="dark"] .layout-limpio { 
+  background-color: #121212 !important; 
+  color: #e0e0e0 !important; 
+}
+
+/* =========================================================
+   NIVEL 2: SECCIONES ALTERNAS (Efecto Cebra en el Home)
+   ========================================================= */
+/* Alternamos colores en las secciones para que se note el corte entre ellas */
+[data-bs-theme="dark"] .productos-destacados,
+[data-bs-theme="dark"] .seccion-testimonios {
+  background-color: #121212 !important; /* Fondo base */
+}
+
+[data-bs-theme="dark"] .impresoras-section,
+[data-bs-theme="dark"] .seccion-sobre-nosotros,
+[data-bs-theme="dark"] .bg-light {
+  background-color: #1a1a1a !important; /* Gris un poco más claro para diferenciar */
+}
+
+/* =========================================================
+   NIVEL 3: TARJETAS Y CAJAS (Capa superior, destacan sobre el fondo)
+   ========================================================= */
+[data-bs-theme="dark"] .tarjeta-producto,
+[data-bs-theme="dark"] .tarjeta-testimonio,
+[data-bs-theme="dark"] .card, 
+[data-bs-theme="dark"] .bg-white, 
+[data-bs-theme="dark"] .product-info-card,
+[data-bs-theme="dark"] .product-image-wrapper { 
+  background-color: #242424 !important; /* Gris mucho más claro que el fondo */
+  border: 1px solid #383838 !important; /* Borde gris medio para dibujar el contorno */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; /* Sombra negra para que "floten" */
+  color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+  background-color: #242424 !important;
+  border-color: #383838 !important;
+  color: #f8f9fa !important;
+}
+[data-bs-theme="dark"] .card-header {
+  background-color: #2c2c2c !important;
+  border-bottom: 1px solid #383838 !important;
+}
+
+/* =========================================================
+   TEXTOS Y ETIQUETAS (Legibilidad máxima)
+   ========================================================= */
+[data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3, 
+[data-bs-theme="dark"] h4, [data-bs-theme="dark"] h5, [data-bs-theme="dark"] h6,
+[data-bs-theme="dark"] p, [data-bs-theme="dark"] span:not(.badge), 
+[data-bs-theme="dark"] label, [data-bs-theme="dark"] .form-label,
+[data-bs-theme="dark"] .text-black, [data-bs-theme="dark"] .text-dark,
+[data-bs-theme="dark"] .tarjeta-producto h3,
+[data-bs-theme="dark"] .tarjeta-producto .producto-descripcion,
+[data-bs-theme="dark"] .tarjeta-producto .producto-precio,
+[data-bs-theme="dark"] .cita-testimonio,
+[data-bs-theme="dark"] .autor-testimonio {
+  color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .text-muted, [data-bs-theme="dark"] .text-secondary { 
+  color: #a0aab2 !important; /* Gris claro legible */
+}
+
+/* =========================================================
+   FORMULARIOS Y BUSCADOR
+   ========================================================= */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .input-group-text {
+  background-color: #1a1a1a !important; /* Más oscuro que la tarjeta para dar efecto "hundido" */
+  color: #f8f9fa !important;
+  border: 1px solid #444 !important;
+}
+[data-bs-theme="dark"] .form-control:focus {
+  border-color: #007BFF !important;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25) !important;
+}
+[data-bs-theme="dark"] .form-control::placeholder { color: #777 !important; }
+
+/* =========================================================
+   FOOTER (Pie de página)
+   ========================================================= */
+[data-bs-theme="dark"] footer, 
+[data-bs-theme="dark"] .app-footer,
+[data-bs-theme="dark"] div[class*="footer"] {
+  background-color: #161616 !important; /* Tono intermedio para el footer */
+  color: #e0e0e0 !important;
+  border-top: 1px solid #2c2c2c !important;
+}
+[data-bs-theme="dark"] footer a, [data-bs-theme="dark"] footer p, 
+[data-bs-theme="dark"] footer span, [data-bs-theme="dark"] footer h1, 
+[data-bs-theme="dark"] footer h2, [data-bs-theme="dark"] footer h3, 
+[data-bs-theme="dark"] footer h4, [data-bs-theme="dark"] footer h5, 
+[data-bs-theme="dark"] footer li {
+  color: #e0e0e0 !important;
+}
+
+/* =========================================================
+   INTERFAZ LATERAL (Aside y Mini-Carrito)
+   ========================================================= */
+[data-bs-theme="dark"] .barra-lateral { 
+  background-color: #161616 !important; 
+  border-left-color: #FF6B00 !important; 
+  box-shadow: -6px 0 25px rgba(0, 0, 0, 0.5) !important;
+}
+[data-bs-theme="dark"] .offcanvas { background-color: #161616 !important; }
+[data-bs-theme="dark"] .offcanvas-header, 
+[data-bs-theme="dark"] .offcanvas-footer { background-color: #121212 !important; border-color: #2c2c2c !important; }
+
+[data-bs-theme="dark"] .iconos-utilidad li a,
+[data-bs-theme="dark"] .iconos-utilidad li button { 
+  background-color: #242424 !important; 
+  border: 1px solid #383838 !important; 
+  color: #ffffff !important; 
+}
+[data-bs-theme="dark"] .barra-lateral nav ul li a { color: #ffffff !important; }
+[data-bs-theme="dark"] .iconos-utilidad li a:hover,
+[data-bs-theme="dark"] .barra-lateral nav ul li a:hover {
+  background: linear-gradient(90deg, #007BFF, #00C6FF) !important; color: #fff !important; border-color: transparent !important;
+}
+
+[data-bs-theme="dark"] .dropdown-menu { background-color: #242424 !important; border: 1px solid #383838 !important; }
+[data-bs-theme="dark"] .dropdown-item { color: #ffffff !important; }
+[data-bs-theme="dark"] .dropdown-item:hover { background-color: #383838 !important; color: #fff !important; }
+
+/* =========================================================
+   BOTONES ESPECÍFICOS EN MODO OSCURO
+   ========================================================= */
+[data-bs-theme="dark"] .btn-dark { 
+  background-color: #383838 !important; 
+  border-color: #444 !important; 
+  color: #fff !important; 
+}
+[data-bs-theme="dark"] .btn-dark:hover { background-color: #555 !important; }
+
+[data-bs-theme="dark"] .btn-outline-dark {
+  color: #f8f9fa !important;
+  border-color: #555 !important;
+  background-color: transparent !important;
+}
+[data-bs-theme="dark"] .btn-outline-dark:hover {
+  background-color: #f8f9fa !important;
+  color: #121212 !important;
+}
+</style>
 
 <style scoped>
 .d-none { display: none !important; }
