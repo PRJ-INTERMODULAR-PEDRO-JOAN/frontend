@@ -153,7 +153,7 @@
         <div class="container">
             <div class="video-wrapper">
                 <h2 class="texto-principal mb-4 text-center fw-bold">Descubre Más Sobre PrintHub</h2>
-                <div class="video-contenedor shadow-lg rounded-4 overflow-hidden">
+                <div class="video-contenedor overflow-hidden">
                     <video autoplay loop muted playsinline class="img-fluid w-100">
                         <source src="/img/Presentacion_Clientes_sin_con.mp4" type="video/mp4" />
                     </video>

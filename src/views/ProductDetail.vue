@@ -149,11 +149,65 @@
 
       </div>
     </main>
+    <transition name="slide-up">
+  <div
+    v-if="showStickyCart && product"
+    class="sticky-cart-bar fixed-bottom shadow-lg border-top p-3 z-3"
+  >
+    <div class="container d-flex justify-content-between align-items-center">
+
+      <div class="d-flex align-items-center gap-3">
+        <img
+          :src="getImagePath(product.image)"
+          class="rounded shadow-sm d-none d-sm-block"
+          style="width: 50px; height: 50px; object-fit: cover;"
+        >
+
+        <div>
+          <h6
+            class="mb-0 fw-bold text-truncate"
+            style="max-width: 200px;"
+          >
+            {{ product.name }}
+          </h6>
+
+          <span class="text-success fw-bold fs-5">
+            {{ formatPrice(product.price) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button
+          v-if="canAddToCart"
+          @click="handleAddToCart"
+          class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow"
+        >
+          Añadir 🛒
+        </button>
+
+        <button
+          v-if="canAddToCart"
+          @click="handleBuyNow"
+          class="btn btn-dark px-4 py-2 rounded-pill fw-bold shadow"
+        >
+          Comprar ⚡
+        </button>
+      </div>
+
+    </div>
+  </div>
+</transition>
+<transition name="slide-fade-up">
+    <div v-if="showSocialProof" class="social-proof-toast shadow-lg rounded-pill px-4 py-2 bg-white border position-fixed z-3" style="bottom: 20px; left: 20px;">
+        <small class="fw-bold text-dark" v-html="socialProofText"></small>
+    </div>
+</transition>
   </MainLayout>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import MainLayout from '../layouts/MainLayout.vue';
 import axios from '../api/axios';
@@ -172,6 +226,9 @@ const isLiked = ref(false);
 const likesCount = ref(0);
 const showAddedMessage = ref(false);
 
+/* 🔥 BARRA STICKY */
+const showStickyCart = ref(false);
+
 const newComment = ref({ rating: 5, text: '' });
 
 const averageRating = computed(() => {
@@ -181,6 +238,7 @@ const averageRating = computed(() => {
 });
 
 const starFilter = ref(0);
+
 const filteredComments = computed(() => {
     if (starFilter.value === 0) return comments.value;
     return comments.value.filter(c => parseInt(c.rating) === starFilter.value);
@@ -188,68 +246,248 @@ const filteredComments = computed(() => {
 
 const canAddToCart = computed(() => {
     if (!product.value || product.value.stock <= 0) return false;
-    const itemInCart = cartStore.cart.find(item => item.id === product.value.id);
+
+    const itemInCart = cartStore.cart.find(
+        item => item.id === product.value.id
+    );
+
     const quantityInCart = itemInCart ? itemInCart.quantity : 0;
+
     return (quantityInCart + 1) <= product.value.stock;
 });
 
-const handleBuyNow = () => { if (canAddToCart.value) { cartStore.addToCart(product.value); router.push('/checkout'); } };
+/* 🔥 SCROLL PARA MOSTRAR LA BARRA */
+const handleScroll = () => {
+    showStickyCart.value = window.scrollY > 450;
+};
+
+const handleBuyNow = () => {
+    if (canAddToCart.value) {
+        cartStore.addToCart(product.value);
+        router.push('/checkout');
+    }
+};
 
 const checkLikeStatus = async (id) => {
     try {
         const likeRes = await axios.get(`/api/products/${id}/like`);
+
         isLiked.value = likeRes.data.is_liked;
-        if (likeRes.data.likes_count !== undefined) likesCount.value = likeRes.data.likes_count;
-    } catch (e) { console.error(e); }
+
+        if (likeRes.data.likes_count !== undefined) {
+            likesCount.value = likeRes.data.likes_count;
+        }
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 const loadProductData = async (id) => {
     loading.value = true;
+
     try {
-        const [prodRes, commRes] = await Promise.all([ axios.get(`/api/products/${id}`), axios.get(`/api/products/${id}/comments`) ]);
-        product.value = prodRes.data; comments.value = commRes.data; likesCount.value = prodRes.data.likes_count || 0;
+        const [prodRes, commRes] = await Promise.all([
+            axios.get(`/api/products/${id}`),
+            axios.get(`/api/products/${id}/comments`)
+        ]);
+
+        product.value = prodRes.data;
+        comments.value = commRes.data;
+        likesCount.value = prodRes.data.likes_count || 0;
+
         if (product.value) {
-          let viewed = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
-          viewed = viewed.filter(p => p.id !== product.value.id);
-          viewed.unshift({ id: product.value.id, name: product.value.name, image: product.value.image, price: product.value.price, description: product.value.description, stock: product.value.stock });
-          if (viewed.length > 4) viewed.pop();
-          localStorage.setItem('recently_viewed', JSON.stringify(viewed));
+            let viewed = JSON.parse(
+                localStorage.getItem('recently_viewed') || '[]'
+            );
+
+            viewed = viewed.filter(p => p.id !== product.value.id);
+
+            viewed.unshift({
+                id: product.value.id,
+                name: product.value.name,
+                image: product.value.image,
+                price: product.value.price,
+                description: product.value.description,
+                stock: product.value.stock
+            });
+
+            if (viewed.length > 4) viewed.pop();
+
+            localStorage.setItem(
+                'recently_viewed',
+                JSON.stringify(viewed)
+            );
         }
+
         if (auth.user) await checkLikeStatus(id);
-    } catch (error) { console.error(error); } finally { loading.value = false; }
+
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
+    }
 };
 
-onMounted(() => { loadProductData(route.params.id); });
-watch(() => auth.user, (newUser) => { if (newUser && product.value) checkLikeStatus(product.value.id); });
-watch(() => route.params.id, (newId) => { if (newId) loadProductData(newId); });
+const showSocialProof = ref(false);
+const socialProofText = ref('');
+const proofs = ["🔥 <b>3 personas</b> están viendo esto.", "📦 <b>Alguien</b> compró esto hace poco.", "❤️ <b>5 personas</b> lo tienen en favoritos."];
+
+// Llama a esto dentro de tu onMounted o loadProductData
+const triggerSocialProof = () => {
+    setTimeout(() => {
+        socialProofText.value = proofs[Math.floor(Math.random()*proofs.length)];
+        showSocialProof.value = true;
+    }, 3000);
+};
+
+onMounted(() => {
+    loadProductData(route.params.id);
+    triggerSocialProof();
+
+    /* 🔥 ACTIVAR LISTENER */
+    window.addEventListener('scroll', handleScroll);
+});
+
+/* 🔥 LIMPIAR LISTENER */
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
+
+watch(() => auth.user, (newUser) => {
+    if (newUser && product.value) {
+        checkLikeStatus(product.value.id);
+    }
+});
+
+watch(() => route.params.id, (newId) => {
+    if (newId) loadProductData(newId);
+});
 
 const animateLike = ref(false);
+
 const toggleLike = async () => {
     if (!auth.user) return alert("Debes iniciar sesión.");
+
     try {
-        const res = await axios.post(`/api/products/${product.value.id}/like`);
-        isLiked.value = res.data.status === 'liked'; likesCount.value = res.data.likes_count;
-        if(isLiked.value) { animateLike.value = true; setTimeout(() => animateLike.value = false, 600); }
-    } catch (e) { console.error(e); }
+        const res = await axios.post(
+            `/api/products/${product.value.id}/like`
+        );
+
+        isLiked.value = res.data.status === 'liked';
+        likesCount.value = res.data.likes_count;
+
+        if (isLiked.value) {
+            animateLike.value = true;
+
+            setTimeout(() => {
+                animateLike.value = false;
+            }, 600);
+        }
+
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 const submitComment = async () => {
-    try { await axios.post(`/api/products/${product.value.id}/comments`, newComment.value); const res = await axios.get(`/api/products/${product.value.id}/comments`); comments.value = res.data; newComment.value.text = ''; newComment.value.rating = 5; } catch (e) { alert("Error al publicar."); }
+    try {
+        await axios.post(
+            `/api/products/${product.value.id}/comments`,
+            newComment.value
+        );
+
+        const res = await axios.get(
+            `/api/products/${product.value.id}/comments`
+        );
+
+        comments.value = res.data;
+
+        newComment.value.text = '';
+        newComment.value.rating = 5;
+
+    } catch (e) {
+        alert("Error al publicar.");
+    }
 };
 
 const deleteComment = async (id) => {
-      if(!confirm("¿Borrar?")) return;
-      try { await axios.delete(`/api/comments/${id}`); const res = await axios.get(`/api/products/${product.value.id}/comments`); comments.value = res.data; } catch (e) { alert("Error al borrar."); }
+    if (!confirm("¿Borrar?")) return;
+
+    try {
+        await axios.delete(`/api/comments/${id}`);
+
+        const res = await axios.get(
+            `/api/products/${product.value.id}/comments`
+        );
+
+        comments.value = res.data;
+
+    } catch (e) {
+        alert("Error al borrar.");
+    }
 };
 
-const handleAddToCart = () => { if (canAddToCart.value) { cartStore.addToCart(product.value); showAddedMessage.value = true; setTimeout(() => { showAddedMessage.value = false; }, 2000); } };
+const handleAddToCart = () => {
+    if (canAddToCart.value) {
 
-const getImagePath = (img) => { if (!img) return '/img/marcaDeAgua.png'; if (img.startsWith('http')) return img; return `/img/${img}`; };
-const handleImageError = (e) => e.target.src = '/img/marcaDeAgua.png';
-const formatPrice = (p) => { if (p === undefined || p === null) return '0,00 €'; return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p); };
+        cartStore.addToCart(product.value);
+
+        showAddedMessage.value = true;
+
+        setTimeout(() => {
+            showAddedMessage.value = false;
+        }, 2000);
+    }
+};
+
+const getImagePath = (img) => {
+    if (!img) return '/img/marcaDeAgua.png';
+
+    if (img.startsWith('http')) return img;
+
+    return `/img/${img}`;
+};
+
+const handleImageError = (e) => {
+    e.target.src = '/img/marcaDeAgua.png';
+};
+
+const formatPrice = (p) => {
+    if (p === undefined || p === null) return '0,00 €';
+
+    return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'EUR'
+    }).format(p);
+};
 </script>
 
 <style scoped>
+
+/* 🔥 BARRA STICKY */
+
+.sticky-cart-bar {
+    background-color: #ffffff;
+    backdrop-filter: blur(10px);
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+/* DARK MODE */
+
+[data-bs-theme="dark"] .sticky-cart-bar {
+    background-color: #1e1e1e !important;
+    border-top-color: #333 !important;
+}
 .btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; }
 .btn-primary:hover { background: linear-gradient(90deg, #ff8c42, #FF6B00); }
 .overlay-agotado-detalle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 10; display: flex; align-items: center; justify-content: center; }
