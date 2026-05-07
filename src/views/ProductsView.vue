@@ -3,9 +3,23 @@
     <main class="contenido-principal" style="padding-top: 50px; min-height: 100vh;">
       
       <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold">Nuestro Catálogo</h1>
-            <p class="lead text-muted">Explora todos nuestros productos e impresoras</p>
+        
+        <div class="row mb-5 align-items-center text-center text-md-start">
+          <div class="col-md-6 mb-3 mb-md-0">
+              <h1 class="display-4 fw-bold">Nuestro Catálogo</h1>
+              <p class="lead text-muted mb-0">Explora todos nuestros productos e impresoras</p>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group shadow-sm">
+              <span class="input-group-text bg-white border-end-0 fs-5">🔍</span>
+              <input 
+                type="text" 
+                class="form-control border-start-0 py-2 fs-5 search-input" 
+                v-model="searchQuery" 
+                placeholder="Buscar (ej. coche, maqueta...)"
+              >
+            </div>
+          </div>
         </div>
 
         <div v-if="loading" class="text-center py-5">
@@ -14,12 +28,16 @@
             </div>
         </div>
 
+        <div v-else-if="filteredProducts.length === 0" class="alert alert-warning text-center shadow-sm fs-5">
+          No hemos encontrado ningún producto que coincida con "<strong>{{ searchQuery }}</strong>".
+        </div>
+
         <div v-else class="contenedor-productos">
             
             <div 
-              v-for="product in products" 
+              v-for="product in filteredProducts" 
               :key="product.id" 
-              class="tarjeta-producto" 
+              class="tarjeta-producto shadow-sm" 
               :class="{ 'agotado': product.stock <= 0 }"
               style="position: relative; overflow: hidden;"
             >
@@ -32,17 +50,18 @@
                     :src="getImagePath(product.image)"
                     :alt="product.name"
                     @error="handleImageError"
+                    class="imagen-maqueta"
                     :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''"
                 >
 
-                <h3>{{ product.name }}</h3>
+                <h3 class="mt-3">{{ product.name }}</h3>
 
-                <p class="producto-descripcion">
+                <p class="producto-descripcion text-muted">
                     {{ truncate(product.description, 100) }}
                 </p>
 
-                <div class="d-flex justify-content-between align-items-center mb-2" style="width: 100%; padding: 0 10px;">
-                    <span class="producto-precio">
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-auto" style="width: 100%; padding: 0 10px;">
+                    <span class="producto-precio text-success fw-bold fs-5">
                         {{ formatPrice(product.price) }}
                     </span>
                     
@@ -52,8 +71,8 @@
                 </div>
 
                 <router-link 
-                    :to="`/products/${product.id}`" 
-                    class="btn w-100 mt-2"
+                    :to="`/product/${product.id}`" 
+                    class="btn w-100 fw-bold"
                     :class="product.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'"
                     :style="{ pointerEvents: product.stock <= 0 ? 'none' : 'auto' }"
                 >
@@ -70,14 +89,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import MainLayout from '../layouts/MainLayout.vue';
 import axios from '../api/axios'; 
 
 const products = ref([]);
 const loading = ref(true);
+const searchQuery = ref('');
 
-// --- Cargar Productos desde la API Laravel ---
+const filteredProducts = computed(() => {
+  if (!searchQuery.value) return products.value;
+  
+  const query = searchQuery.value.toLowerCase();
+  return products.value.filter(product => 
+    product.name.toLowerCase().includes(query) || 
+    (product.description && product.description.toLowerCase().includes(query))
+  );
+});
+
 const fetchProducts = async () => {
   try {
     const response = await axios.get('/api/products');
@@ -89,12 +118,9 @@ const fetchProducts = async () => {
   }
 };
 
-// --- Helpers para formato ---
 const getImagePath = (imageName) => {
     if (!imageName) return '/img/marcaDeAgua.png';
-    // Si la imagen ya viene con http (ej: lorempixel), la dejamos igual
     if (imageName.startsWith('http')) return imageName;
-    // Si no, asumimos que está en la carpeta publica /img/
     return `/img/${imageName}`; 
 };
 
@@ -111,114 +137,81 @@ const truncate = (text, length) => {
     return text.length > length ? text.substring(0, length) + '...' : text;
 };
 
-// --- Al iniciar el componente ---
 onMounted(() => {
     fetchProducts();
 });
 </script>
 
 <style scoped>
-/* Estilos específicos para replicar el overlay de Agotado de Blade */
+/* --- NUEVA CLASE PARA FIJAR EL TAMAÑO DE LA IMAGEN EXACTAMENTE A 267x405 --- */
+.imagen-maqueta {
+  width: 100%;
+  max-width: 267px;       /* Ancho máximo de 267px */
+  height: 405px;          /* Alto fijo de 405px */
+  object-fit: cover;      /* Recorta la imagen para que encaje sin aplastarla o deformarla */
+  margin: 0 auto;         /* Centra la imagen dentro de la tarjeta */
+  display: block;
+  border-radius: 8px;     /* Redondea un poquito los bordes de la foto */
+}
+
+/* Estilo del input de búsqueda */
+.input-group-text { background-color: transparent; }
+.search-input:focus { border-color: #dee2e6; box-shadow: none; }
+
+/* Overlay Agotado */
 .overlay-agotado {
     position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
     background: rgba(255,255,255,0.6); 
-    z-index: 5; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
+    z-index: 5; display: flex; 
+    align-items: center; justify-content: center;
 }
 
 .badge-agotado {
-    background: #dc3545; 
-    color: white; 
-    padding: 10px 20px; 
-    font-weight: bold; 
-    transform: rotate(-15deg); 
-    font-size: 1.2rem; 
-    border-radius: 5px; 
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background: #dc3545; color: white; 
+    padding: 10px 20px; font-weight: bold; 
+    transform: rotate(-15deg); font-size: 1.2rem; 
+    border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Ajuste del botón para que coincida con el estilo legacy */
+/* Botón */
 .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: white;
-    text-decoration: none;
-    text-align: center;
+    background: linear-gradient(90deg, #007BFF, #00C6FF);
+    border: none; color: white; text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .btn-primary:hover {
-    background-color: #0b5ed7;
+    transform: scale(1.02); box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
-/* Aseguramos que la rejilla herede los estilos globales, 
-   pero si no cargan, forzamos un grid básico */
+/* Tarjeta y Flexbox */
+.tarjeta-producto {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    background: #fff; border: 1px solid #eee; border-radius: 12px;
+    padding: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-producto:hover {
+    transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Grid layout */
 .contenedor-productos {
-    display: grid;
-    gap: 28px;
-    width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    display: grid; gap: 28px; width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     padding-bottom: 40px;
 }
 
 @media (min-width: 576px) and (max-width: 991.98px) {
-    /* Sobrescribe las 4 columnas por defecto a 2 */
-    .contenedor-productos {
-        grid-template-columns: repeat(2, minmax(240px, 1fr));
-    }
-
-    /* Sobrescribe la alineación izquierda por defecto a centro */
-    .texto-sobre-nosotros { text-align: center; }
-    .texto-sobre-nosotros h2 { text-align: center; }
+    .contenedor-productos { grid-template-columns: repeat(2, minmax(260px, 1fr)); }
 }
 
-/* 2. MÓVILES (Menos de 576px) */
 @media (max-width: 575.98px) {
-    /* Hero texto más pequeño */
-    .hero h1 { font-size: 2rem; }
-    .hero p { font-size: 1rem; }
-    
-    /* Grid de 1 columna */
-    .contenedor-productos {
-        grid-template-columns: 1fr;
-        /* Opcional: Si quieres que las columnas no sean tan anchas como la pantalla, 
-           puedes añadir márgenes laterales al grid aquí: */
-        padding: 0 10px; 
-    }
-
-    /* --- CAMBIOS PARA HACER LAS CARDS MÁS PEQUEÑAS --- */
-    .tarjeta-producto {
-        padding: 12px; /* Reducido de 18px */
-        gap: 6px;      /* Reducido de 10px */
-        border-radius: 10px; /* Un poco menos redondeado para ahorrar espacio visual */
-    }
-
-    .tarjeta-producto .producto-precio {
-        font-size: 1.2rem; /* Reducido de 1.5rem */
-        margin: 4px 0;
-    }
-
-    .tarjeta-producto .producto-descripcion {
-        font-size: 0.85rem; /* Letra un poco más pequeña */
-        min-height: auto;   /* Quitamos la altura mínima para que no ocupe espacio vacío */
-        margin-bottom: 5px;
-    }
-
-    .tarjeta-producto .boton {
-        padding: 8px 16px; /* Botón más compacto */
-        font-size: 0.9rem;
-    }
-    /* ------------------------------------------------ */
-
-    /* Sobrescribe la alineación izquierda por defecto a centro */
-    .texto-sobre-nosotros { text-align: center; }
-    .texto-sobre-nosotros h2 { text-align: center; }
-
-    /* Video titulo más pequeño */
-    .video h2 { font-size: 1.5rem; }
+    .contenedor-productos { grid-template-columns: 1fr; padding: 0 10px; }
+    .tarjeta-producto { padding: 12px; gap: 6px; border-radius: 10px; }
+    .tarjeta-producto .producto-precio { font-size: 1.2rem; margin: 4px 0; }
+    .tarjeta-producto .producto-descripcion { font-size: 0.85rem; min-height: auto; margin-bottom: 5px; }
+    .tarjeta-producto .btn { padding: 8px 16px; font-size: 0.9rem; }
 }
 </style>

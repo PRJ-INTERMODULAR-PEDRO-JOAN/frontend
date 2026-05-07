@@ -44,7 +44,7 @@
               </div>
 
               <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-md-start">
-                <router-link :to="`/products/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                <router-link :to="`/product/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4">
                   Ver Detalles
                 </router-link>
                 <button class="btn btn-danger btn-lg rounded-pill px-5 shadow fw-bold animate-pulse">
@@ -77,24 +77,27 @@
                 <span class="badge bg-danger shadow animate-pulse">🔥 -50%</span>
               </div>
 
-              <img :src="getImagePath(product.image)" :alt="product.name" @error="handleImageError">
+              <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
               <h3>{{ product.name }}</h3>
               <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
 
-              <div class="mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
                 <span v-if="ofertaDia && ofertaDia.id === product.id">
                   <span class="text-decoration-line-through text-muted small me-2">{{ formatPrice(product.price) }}</span>
                   <span class="producto-precio text-danger fw-bold">{{ formatPrice(product.price / 2) }}</span>
                 </span>
-                <span v-else class="producto-precio">{{ formatPrice(product.price) }}</span>
+                <span v-else class="producto-precio fw-bold fs-5">{{ formatPrice(product.price) }}</span>
+                <small v-if="product.stock > 0 && product.stock <= 5" class="text-danger fw-bold">
+                    ¡Quedan {{ product.stock }}!
+                </small>
               </div>
 
-              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2" :class="product.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
-                Ver Detalles y Opinar
+              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2 fw-bold" :class="product.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'" :style="{ pointerEvents: product.stock <= 0 ? 'none' : 'auto' }">
+                 {{ product.stock <= 0 ? 'Sin Stock' : 'Ver Detalles y Opinar' }}
               </router-link>
             </div>
-          </div>
+            </div>
         </div>
       </section>
 
@@ -111,20 +114,23 @@
                 <span class="badge-agotado">AGOTADO</span>
               </div>
 
-              <img :src="getImagePath(impresora.image)" :alt="impresora.name" @error="handleImageError">
+              <img :src="getImagePath(impresora.image)" :alt="impresora.name" class="imagen-maqueta" @error="handleImageError" :style="impresora.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
               <h3>{{ impresora.name }}</h3>
               <p class="producto-descripcion">{{ truncate(impresora.description, 80) }}</p>
               
-              <div class="mb-2">
-                  <span class="producto-precio">{{ formatPrice(impresora.price) }}</span>
+               <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
+                  <span class="producto-precio fw-bold fs-5">{{ formatPrice(impresora.price) }}</span>
+                   <small v-if="impresora.stock > 0 && impresora.stock <= 5" class="text-danger fw-bold">
+                        ¡Quedan {{ impresora.stock }}!
+                   </small>
               </div>
 
-              <router-link :to="`/products/${impresora.id}`" class="btn w-100 mt-2" :class="impresora.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
-                Ver Detalles y Opinar
+              <router-link :to="`/products/${impresora.id}`" class="btn w-100 mt-2 fw-bold" :class="impresora.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'" :style="{ pointerEvents: impresora.stock <= 0 ? 'none' : 'auto' }">
+                {{ impresora.stock <= 0 ? 'Sin Stock' : 'Ver Detalles y Opinar' }}
               </router-link>
             </div>
-          </div>
+             </div>
         </div>
       </section>
 
@@ -295,6 +301,9 @@ onMounted(() => {
 .tarjeta-producto {
   position: relative;
   overflow: hidden;
+  /* Make card flex column so button goes to bottom */
+  display: flex;
+  flex-direction: column;
 }
 .overlay-agotado {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -308,4 +317,26 @@ onMounted(() => {
 .badge-oferta {
     position: absolute; top: 10px; right: 10px; z-index: 4;
 }
+
+/* ADD THIS CLASS TO FIX IMAGE SIZES */
+.imagen-maqueta {
+  width: 100%;
+  max-width: 267px;       
+  height: 405px;          
+  object-fit: cover;      
+  margin: 0 auto;         
+  display: block;
+  border-radius: 8px;     
+}
+
+/* ADJUST BTN CLASSES */
+.btn-primary {
+    background: linear-gradient(90deg, #007BFF, #00C6FF);
+    border: none; color: white; text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+    transform: scale(1.02); box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
 </style>
