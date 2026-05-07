@@ -22,11 +22,11 @@
         </div>
       </section>
 
-      <section v-if="ofertaDia" class="py-5 bg-dark text-white" style="background: linear-gradient(135deg, #1a1a1a, #2c3e50);">
+      <section v-if="ofertaDia" class="py-5 banner-oferta-seccion">
         <div class="container">
-          <div class="row align-items-center bg-white rounded-4 shadow overflow-hidden text-dark p-0">
+          <div class="row align-items-center oferta-card rounded-4 shadow overflow-hidden p-0">
             
-            <div class="col-md-6 p-0 position-relative" style="background: #f8f9fa; min-height: 400px; display: flex; align-items: center; justify-content: center;">
+            <div class="col-md-6 p-0 position-relative oferta-img-container" style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
               <div class="position-absolute top-0 start-0 bg-danger text-white fw-bold px-4 py-2 shadow" style="font-size: 1.5rem; z-index: 10; border-bottom-right-radius: 10px;">
                 🔥 -50% HOY
               </div>
@@ -35,8 +35,8 @@
 
             <div class="col-md-6 p-5 text-center text-md-start">
               <h4 class="text-danger fw-bold text-uppercase mb-2">⚡ Oferta Flash Exclusiva</h4>
-              <h2 class="display-4 fw-bold mb-3">{{ ofertaDia.name }}</h2>
-              <p class="lead text-muted mb-4">{{ truncate(ofertaDia.description, 120) }}</p>
+              <h2 class="display-4 fw-bold mb-3 texto-principal">{{ ofertaDia.name }}</h2>
+              <p class="lead text-muted mb-4 descripcion-oferta">{{ truncate(ofertaDia.description, 120) }}</p>
               
               <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-4">
                 <div class="text-decoration-line-through text-muted fs-3">{{ formatPrice(ofertaDia.price) }}</div>
@@ -44,7 +44,7 @@
               </div>
 
               <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-md-start">
-                <router-link :to="`/product/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                <router-link :to="`/product/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4 btn-oferta-detalle">
                   Ver Detalles
                 </router-link>
                 <button class="btn btn-danger btn-lg rounded-pill px-5 shadow fw-bold animate-pulse">
@@ -52,7 +52,7 @@
                 </button>
               </div>
               
-              <div class="mt-4 pt-3 border-top small text-muted">
+              <div class="mt-4 pt-3 border-top small text-muted descripcion-oferta">
                 * Oferta válida solo durante el día de hoy. Stock limitado: <strong>{{ ofertaDia.stock }} unidades</strong>.
               </div>
             </div>
@@ -63,9 +63,9 @@
 
       <section id="destacados" class="productos-destacados pt-5">
         <div class="container">
-          <h1>Productos Destacados</h1>
+          <h1 class="texto-principal">Productos Destacados</h1>
           
-          <div v-if="loading" class="text-center py-5">Cargando productos...</div>
+          <div v-if="loading" class="text-center py-5 texto-principal">Cargando productos...</div>
 
           <div v-else class="contenedor-productos">
             <div v-for="product in destacados" :key="product.id" class="tarjeta-producto" :class="{ 'agotado': product.stock <= 0 }">
@@ -79,7 +79,7 @@
 
               <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
-              <h3>{{ product.name }}</h3>
+              <h3 class="texto-principal">{{ product.name }}</h3>
               <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
 
               <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
@@ -87,7 +87,7 @@
                   <span class="text-decoration-line-through text-muted small me-2">{{ formatPrice(product.price) }}</span>
                   <span class="producto-precio text-danger fw-bold">{{ formatPrice(product.price / 2) }}</span>
                 </span>
-                <span v-else class="producto-precio fw-bold fs-5">{{ formatPrice(product.price) }}</span>
+                <span v-else class="producto-precio fw-bold fs-5 text-success">{{ formatPrice(product.price) }}</span>
                 <small v-if="product.stock > 0 && product.stock <= 5" class="text-danger fw-bold">
                     ¡Quedan {{ product.stock }}!
                 </small>
@@ -101,11 +101,11 @@
         </div>
       </section>
 
-      <section id="impresoras" class="impresoras-section">
+      <section id="impresoras" class="impresoras-section seccion-alterna">
         <div class="container">
-          <h1 class="impresoras-titulo">Nuestras Impresoras 3D</h1>
+          <h1 class="impresoras-titulo texto-principal">Nuestras Impresoras 3D</h1>
           
-          <div v-if="loading" class="text-center">Cargando impresoras...</div>
+          <div v-if="loading" class="text-center texto-principal">Cargando impresoras...</div>
           
           <div v-else class="contenedor-productos">
             <div v-for="impresora in impresoras" :key="impresora.id" class="tarjeta-producto" :class="{ 'agotado': impresora.stock <= 0 }">
@@ -116,11 +116,11 @@
 
               <img :src="getImagePath(impresora.image)" :alt="impresora.name" class="imagen-maqueta" @error="handleImageError" :style="impresora.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
-              <h3>{{ impresora.name }}</h3>
+              <h3 class="texto-principal">{{ impresora.name }}</h3>
               <p class="producto-descripcion">{{ truncate(impresora.description, 80) }}</p>
               
                <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
-                  <span class="producto-precio fw-bold fs-5">{{ formatPrice(impresora.price) }}</span>
+                  <span class="producto-precio text-success fw-bold fs-5">{{ formatPrice(impresora.price) }}</span>
                    <small v-if="impresora.stock > 0 && impresora.stock <= 5" class="text-danger fw-bold">
                         ¡Quedan {{ impresora.stock }}!
                    </small>
@@ -138,23 +138,23 @@
         <div class="container">
             <div class="row gy-4 sobre-nosotros-fila">
                 <div class="col-12 col-md-12 col-lg-5 gif-sobre-nosotros">
-                    <img src="/img/impresora.gif" alt="GIF PrintHub" class="img-fluid" />
+                    <img src="/img/impresora.gif" alt="GIF PrintHub" class="img-fluid rounded-4 shadow-sm" />
                 </div>
                 <div class="col-12 col-md-12 col-lg-7 texto-sobre-nosotros">
-                    <h2>Sobre Nosotros</h2>
-                    <p>En PrintHub, nos especializamos en la creación de maquetas personalizadas utilizando tecnología de impresión 3D de última generación...</p>
-                    <p>Ya sea que busques una figura de tu videojuego favorito, una maqueta arquitectónica o un modelo de automóvil...</p>
+                    <h2 class="texto-principal">Sobre Nosotros</h2>
+                    <p class="text-muted">En PrintHub, nos especializamos en la creación de maquetas personalizadas utilizando tecnología de impresión 3D de última generación...</p>
+                    <p class="text-muted">Ya sea que busques una figura de tu videojuego favorito, una maqueta arquitectónica o un modelo de automóvil...</p>
                 </div>
             </div>
         </div>
       </section>
 
-      <section class="video">
+      <section class="video seccion-alterna py-5">
         <div class="container">
             <div class="video-wrapper">
-                <h2 class="text-black">Descubre Más Sobre PrintHub</h2>
-                <div class="video-contenedor">
-                    <video autoplay loop muted playsinline class="img-fluid">
+                <h2 class="texto-principal mb-4 text-center fw-bold">Descubre Más Sobre PrintHub</h2>
+                <div class="video-contenedor shadow-lg rounded-4 overflow-hidden">
+                    <video autoplay loop muted playsinline class="img-fluid w-100">
                         <source src="/img/Presentacion_Clientes_sin_con.mp4" type="video/mp4" />
                     </video>
                 </div>
@@ -162,37 +162,37 @@
         </div>
       </section>
 
-      <section class="seccion-testimonios">
+      <section class="seccion-testimonios py-5">
         <div class="container">
-            <h2>Qué dicen nuestros clientes</h2>
+            <h2 class="texto-principal mb-5 text-center fw-bold">Qué dicen nuestros clientes</h2>
             <div class="row g-4 contenedor-testimonios">
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="tarjeta-testimonio h-100">
-                        <p class="cita-testimonio">"¡Increíble! Pedí una maqueta de mi coche soñado y el nivel de detalle es espectacular. 100% recomendado."</p>
-                        <span class="autor-testimonio">- Carlos G.</span>
+                    <div class="tarjeta-testimonio h-100 p-4 rounded-4 shadow-sm">
+                        <p class="cita-testimonio text-muted">"¡Increíble! Pedí una maqueta de mi coche soñado y el nivel de detalle es espectacular. 100% recomendado."</p>
+                        <span class="autor-testimonio fw-bold texto-principal">- Carlos G.</span>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="tarjeta-testimonio h-100">
-                        <p class="cita-testimonio">"El servicio de diseño personalizado es genial. Captaron mi idea a la primera y la figura de Aatrox quedó perfecta."</p>
-                        <span class="autor-testimonio">- Laura M.</span>
+                    <div class="tarjeta-testimonio h-100 p-4 rounded-4 shadow-sm">
+                        <p class="cita-testimonio text-muted">"El servicio de diseño personalizado es genial. Captaron mi idea a la primera y la figura de Aatrox quedó perfecta."</p>
+                        <span class="autor-testimonio fw-bold texto-principal">- Laura M.</span>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="tarjeta-testimonio h-100">
-                        <p class="cita-testimonio">"Compré mi primera impresora 3D aquí y el soporte fue excelente. Muy contenta con la Ender 3."</p>
-                        <span class="autor-testimonio">- Javier R.</span>
+                    <div class="tarjeta-testimonio h-100 p-4 rounded-4 shadow-sm">
+                        <p class="cita-testimonio text-muted">"Compré mi primera impresora 3D aquí y el soporte fue excelente. Muy contenta con la Ender 3."</p>
+                        <span class="autor-testimonio fw-bold texto-principal">- Javier R.</span>
                     </div>
                 </div>
             </div>
         </div>
       </section>
 
-       <section v-if="recentlyViewed.length > 0" class="productos-destacados pt-5 bg-light">
+       <section v-if="recentlyViewed.length > 0" class="productos-destacados py-5 seccion-recientes">
         <div class="container">
-          <h1>Vistos Recientemente 👁️</h1>
+          <h1 class="texto-principal mb-4">Vistos Recientemente 👁️</h1>
           
-          <div class="contenedor-productos mt-4">
+          <div class="contenedor-productos">
             <div v-for="product in recentlyViewed" :key="product.id" class="tarjeta-producto" :class="{ 'agotado': product.stock <= 0 }">
               
               <div v-if="product.stock <= 0" class="overlay-agotado">
@@ -201,14 +201,14 @@
 
               <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
-              <h3>{{ product.name }}</h3>
+              <h3 class="texto-principal">{{ product.name }}</h3>
               <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
 
               <div class="d-flex justify-content-between align-items-center mb-2 mt-auto" style="width: 100%; padding: 0 10px;">
-                <span class="producto-precio fw-bold fs-5">{{ formatPrice(product.price) }}</span>
+                <span class="producto-precio fw-bold fs-5 text-success">{{ formatPrice(product.price) }}</span>
               </div>
 
-              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2 fw-bold btn-outline-dark">
+              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2 fw-bold btn-outline-dark btn-volver-ver">
                  Volver a ver
               </router-link>
             </div>
@@ -240,17 +240,12 @@ const fetchProducts = async () => {
   }
 };
 
-// --- LOGICA CATEGORIAS CORREGIDA ---
 const impresoras = computed(() => {
-    return products.value.filter(p => 
-        p.category && p.category.toLowerCase() === 'impresoras'
-    );
+    return products.value.filter(p => p.category && p.category.toLowerCase() === 'impresoras');
 });
 
 const destacados = computed(() => {
-    return products.value.filter(p => 
-        !p.category || p.category.toLowerCase() !== 'impresoras'
-    );
+    return products.value.filter(p => !p.category || p.category.toLowerCase() !== 'impresoras');
 });
 
 const ofertaDia = computed(() => {
@@ -258,39 +253,25 @@ const ofertaDia = computed(() => {
     return products.value.find(p => p.id === 1) || products.value[0];
 });
 
-// --- HELPERS VISUALES ---
 const getImagePath = (imageName) => {
     if (!imageName) return '/img/marcaDeAgua.png';
     if (imageName.startsWith('http')) return imageName;
     return `/img/${imageName}`; 
 };
 
-const handleImageError = (e) => {
-    e.target.src = '/img/marcaDeAgua.png';
-};
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
-};
-
+const handleImageError = (e) => { e.target.src = '/img/marcaDeAgua.png'; };
+const formatPrice = (price) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
 const truncate = (text, length) => {
     if (!text) return '';
     return text.length > length ? text.substring(0, length) + '...' : text;
 };
 
-// Añade esto donde tienes const products = ref([]);
 const recentlyViewed = ref([]);
 
-// Añade esto dentro del onMounted(() => { ... })
 onMounted(() => {
     fetchProducts();
-    
-    // Cargar los productos vistos recientemente de la memoria local
     recentlyViewed.value = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
 
-    // ... (aquí sigue lo del chatbot n8n que ya tienes)
-
-    // --- CHATBOT N8N CON PROXY (Sin CORS) ---
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
@@ -299,80 +280,113 @@ onMounted(() => {
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
         .then(module => {
             module.createChat({
-                // CAMBIO IMPORTANTE: Usamos la ruta relativa /n8n/...
-                // Vite transformará esto a http://localhost:5678/webhook/...
                 webhookUrl: '/n8n/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat'
             });
         })
-        .catch(err => {
-            console.error('Error cargando el chatbot de n8n:', err);
-        });
+        .catch(err => { console.error('Error cargando el chatbot de n8n:', err); });
 });
 </script>
 
-<style>
-/* Estilos Globales para Animaciones (Si no están en styles.css) */
-@keyframes scrollText {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
-}
-@keyframes pulseGlow {
-  0% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); }
-  50% { transform: scale(1.05); text-shadow: 0 0 12px rgba(255, 255, 255, 0.6); }
-  100% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); }
-}
-@keyframes bounce {
-  0%,20%,50%,80%,100% { transform: translateY(0); }
-  40% { transform: translateY(20px); }
-  60% { transform: translateY(15px); }
-}
+<style scoped>
+/* ESTILOS BASE MODO CLARO */
+.banner-oferta-seccion { background: linear-gradient(135deg, #1a1a1a, #2c3e50); }
+.oferta-card { background-color: #ffffff; color: #212529; }
+.oferta-img-container { background-color: #f8f9fa; }
+.seccion-recientes { background-color: #f8f9fa; border-top: 1px solid #eaeaea;}
+.tarjeta-testimonio { background-color: #ffffff; border: 1px solid #eaeaea; }
+
+@keyframes scrollText { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
+@keyframes pulseGlow { 0% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); text-shadow: 0 0 12px rgba(255, 255, 255, 0.6); } 100% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } }
 .animate-pulse { animation: pulse 2s infinite; }
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+@keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
+
+.tarjeta-producto { position: relative; overflow: hidden; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; padding: 15px; transition: 0.3s; }
+.tarjeta-producto:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.overlay-agotado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 5; display: flex; align-items: center; justify-content: center; }
+.badge-agotado { background: #dc3545; color: white; padding: 10px 20px; font-weight: bold; transform: rotate(-15deg); font-size: 1.2rem; border-radius: 5px; }
+.badge-oferta { position: absolute; top: 10px; right: 10px; z-index: 4; }
+.imagen-maqueta { width: 100%; max-width: 267px; height: 350px; object-fit: cover; margin: 0 auto; display: block; border-radius: 8px; }
+.btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; color: white; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3); background: linear-gradient(90deg, #ff8c42, #FF6B00); }
+</style>
+
+<style>
+/* =========================================================================
+   SOPORTE TOTAL PARA MODO OSCURO (DARK MODE) EN EL HOME
+   Estas reglas solo actúan si el data-bs-theme="dark" está activo
+   ========================================================================= */
+
+/* 1. Fondos principales de las secciones */
+[data-bs-theme="dark"] body,
+[data-bs-theme="dark"] .contenido-principal,
+[data-bs-theme="dark"] .productos-destacados,
+[data-bs-theme="dark"] .seccion-sobre-nosotros,
+[data-bs-theme="dark"] .seccion-testimonios {
+    background-color: #121212 !important;
 }
 
-/* Ajuste para que el overlay de agotado funcione */
-.tarjeta-producto {
-  position: relative;
-  overflow: hidden;
-  /* Make card flex column so button goes to bottom */
-  display: flex;
-  flex-direction: column;
-}
-.overlay-agotado {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(255,255,255,0.6); z-index: 5;
-    display: flex; align-items: center; justify-content: center;
-}
-.badge-agotado {
-    background: #dc3545; color: white; padding: 10px 20px;
-    font-weight: bold; transform: rotate(-15deg); font-size: 1.2rem; border-radius: 5px;
-}
-.badge-oferta {
-    position: absolute; top: 10px; right: 10px; z-index: 4;
+/* Efecto Cebra: separamos las secciones visualmente */
+[data-bs-theme="dark"] .seccion-alterna,
+[data-bs-theme="dark"] .seccion-recientes {
+    background-color: #1a1a1a !important;
+    border-top: 1px solid #2a2a2a !important;
 }
 
-/* ADD THIS CLASS TO FIX IMAGE SIZES */
-.imagen-maqueta {
-  width: 100%;
-  max-width: 267px;       
-  height: 405px;          
-  object-fit: cover;      
-  margin: 0 auto;         
-  display: block;
-  border-radius: 8px;     
+/* 2. Textos Globales (Títulos, Párrafos, Descripciones) */
+[data-bs-theme="dark"] .texto-principal,
+[data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3,
+[data-bs-theme="dark"] .cita-testimonio {
+    color: #f8f9fa !important;
 }
 
-/* ADJUST BTN CLASSES */
-.btn-primary {
-    background: linear-gradient(90deg, #007BFF, #00C6FF);
-    border: none; color: white; text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.btn-primary:hover {
-    transform: scale(1.02); box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+[data-bs-theme="dark"] .text-muted,
+[data-bs-theme="dark"] .producto-descripcion,
+[data-bs-theme="dark"] .descripcion-oferta {
+    color: #adb5bd !important;
 }
 
+/* 3. Tarjetas de Productos y Testimonios */
+[data-bs-theme="dark"] .tarjeta-producto,
+[data-bs-theme="dark"] .tarjeta-testimonio {
+    background-color: #242424 !important;
+    border: 1px solid #383838 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-bs-theme="dark"] .tarjeta-producto:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Oscurecer el overlay de Agotado para que no deslumbre en blanco */
+[data-bs-theme="dark"] .overlay-agotado {
+    background: rgba(18, 18, 18, 0.75) !important;
+}
+
+/* 4. Tarjeta de la Oferta Flash (Héroe) */
+[data-bs-theme="dark"] .oferta-card {
+    background-color: #242424 !important;
+    border: 1px solid #383838 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+}
+
+[data-bs-theme="dark"] .oferta-img-container {
+    background-color: #161616 !important; /* Fondo sutil para la imagen */
+}
+
+/* Botones con bordes (Outline) en modo oscuro */
+[data-bs-theme="dark"] .btn-oferta-detalle,
+[data-bs-theme="dark"] .btn-volver-ver {
+    color: #f8f9fa !important;
+    border-color: #666 !important;
+}
+
+[data-bs-theme="dark"] .btn-oferta-detalle:hover,
+[data-bs-theme="dark"] .btn-volver-ver:hover {
+    background-color: #383838 !important;
+    border-color: #888 !important;
+}
+
+[data-bs-theme="dark"] .pie-pagina li {
+  color : #FFF !important;
+}
 </style>
