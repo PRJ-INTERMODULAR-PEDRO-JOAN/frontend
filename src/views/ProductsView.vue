@@ -4,20 +4,38 @@
       
       <div class="container">
         
-        <div class="row mb-5 align-items-center text-center text-md-start">
-          <div class="col-md-6 mb-3 mb-md-0">
-              <h1 class="display-4 fw-bold">Nuestro Catálogo</h1>
-              <p class="lead text-muted mb-0">Explora todos nuestros productos e impresoras</p>
+        <div class="row mb-5 gy-3 align-items-end">
+          <div class="col-lg-4 col-md-12 text-center text-lg-start">
+              <h1 class="display-5 fw-bold mb-0">Catálogo</h1>
+              <p class="lead text-muted mb-0">Encuentra tu maqueta ideal</p>
           </div>
-          <div class="col-md-6">
-            <div class="input-group shadow-sm">
-              <span class="input-group-text bg-white border-end-0 fs-5">🔍</span>
-              <input 
-                type="text" 
-                class="form-control border-start-0 py-2 fs-5 search-input" 
-                v-model="searchQuery" 
-                placeholder="Buscar (ej. coche, maqueta...)"
-              >
+          
+          <div class="col-lg-8 col-md-12">
+            <div class="row g-2">
+              <div class="col-md-5">
+                <label class="form-label small fw-bold text-muted">Buscar por nombre</label>
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-white border-end-0">🔍</span>
+                  <input type="text" class="form-control border-start-0" v-model="searchQuery" placeholder="Ej. Coche...">
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Categoría</label>
+                <select class="form-select shadow-sm" v-model="selectedCategory">
+                  <option value="">Todas las categorías</option>
+                  <option v-for="cat in uniqueCategories" :key="cat" :value="cat">{{ cat }}</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted">Ordenar por</label>
+                <select class="form-select shadow-sm" v-model="sortOrder">
+                  <option value="default">Relevancia</option>
+                  <option value="low">Precio: Menor a Mayor</option>
+                  <option value="high">Precio: Mayor a Menor</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -28,62 +46,29 @@
             </div>
         </div>
 
-        <div v-else-if="filteredProducts.length === 0" class="alert alert-warning text-center shadow-sm fs-5">
-          No hemos encontrado ningún producto que coincida con "<strong>{{ searchQuery }}</strong>".
+        <div v-else-if="filteredProducts.length === 0" class="alert alert-warning text-center shadow-sm py-4">
+          <p class="mb-0 fs-5">No hay productos que coincidan con tus filtros.</p>
+          <button class="btn btn-sm btn-outline-warning mt-2" @click="resetFilters">Limpiar filtros</button>
         </div>
 
         <div v-else class="contenedor-productos">
-            
-            <div 
-              v-for="product in filteredProducts" 
-              :key="product.id" 
-              class="tarjeta-producto shadow-sm" 
-              :class="{ 'agotado': product.stock <= 0 }"
-              style="position: relative; overflow: hidden;"
-            >
-
+            <div v-for="product in filteredProducts" :key="product.id" class="tarjeta-producto shadow-sm" :class="{ 'agotado': product.stock <= 0 }">
                 <div v-if="product.stock <= 0" class="overlay-agotado">
                     <span class="badge-agotado">AGOTADO</span>
                 </div>
-
-                <img
-                    :src="getImagePath(product.image)"
-                    :alt="product.name"
-                    @error="handleImageError"
-                    class="imagen-maqueta"
-                    :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''"
-                >
-
+                <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
                 <h3 class="mt-3">{{ product.name }}</h3>
-
-                <p class="producto-descripcion text-muted">
-                    {{ truncate(product.description, 100) }}
-                </p>
-
-                <div class="d-flex justify-content-between align-items-center mb-3 mt-auto" style="width: 100%; padding: 0 10px;">
-                    <span class="producto-precio text-success fw-bold fs-5">
-                        {{ formatPrice(product.price) }}
-                    </span>
-                    
-                    <small v-if="product.stock > 0 && product.stock <= 5" class="text-danger fw-bold">
-                        ¡Quedan {{ product.stock }}!
-                    </small>
+                <p class="producto-descripcion text-muted">{{ truncate(product.description, 90) }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-auto w-100 px-2">
+                    <span class="producto-precio text-success fw-bold fs-5">{{ formatPrice(product.price) }}</span>
+                    <small v-if="product.stock > 0 && product.stock <= 5" class="text-danger fw-bold">¡Últimas {{ product.stock }}!</small>
                 </div>
-
-                <router-link 
-                    :to="`/product/${product.id}`" 
-                    class="btn w-100 fw-bold"
-                    :class="product.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'"
-                    :style="{ pointerEvents: product.stock <= 0 ? 'none' : 'auto' }"
-                >
-                    {{ product.stock <= 0 ? 'Sin Stock' : 'Ver Detalles y Opinar' }}
+                <router-link :to="`/products/${product.id}`" class="btn w-100 fw-bold" :class="product.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'">
+                    {{ product.stock <= 0 ? 'Sin Stock' : 'Ver Detalles' }}
                 </router-link>
-
             </div>
         </div>
       </div>
-      <br>
-
     </main>
   </MainLayout>
 </template>
@@ -95,123 +80,72 @@ import axios from '../api/axios';
 
 const products = ref([]);
 const loading = ref(true);
-const searchQuery = ref('');
 
-const filteredProducts = computed(() => {
-  if (!searchQuery.value) return products.value;
-  
-  const query = searchQuery.value.toLowerCase();
-  return products.value.filter(product => 
-    product.name.toLowerCase().includes(query) || 
-    (product.description && product.description.toLowerCase().includes(query))
-  );
+// Estado de los filtros
+const searchQuery = ref('');
+const selectedCategory = ref('');
+const sortOrder = ref('default');
+
+// Obtener categorías únicas automáticamente
+const uniqueCategories = computed(() => {
+  const categories = products.value
+    .map(p => p.category)
+    .filter(cat => cat != null && cat !== '');
+  return [...new Set(categories)];
 });
+
+// Lógica combinada de filtrado y ordenación
+const filteredProducts = computed(() => {
+  let result = [...products.value];
+
+  // 1. Filtro por texto
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase();
+    result = result.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
+  }
+
+  // 2. Filtro por categoría
+  if (selectedCategory.value) {
+    result = result.filter(p => p.category === selectedCategory.value);
+  }
+
+  // 3. Ordenación por precio
+  if (sortOrder.value === 'low') {
+    result.sort((a, b) => a.price - b.price);
+  } else if (sortOrder.value === 'high') {
+    result.sort((a, b) => b.price - a.price);
+  }
+
+  return result;
+});
+
+const resetFilters = () => {
+  searchQuery.value = '';
+  selectedCategory.value = '';
+  sortOrder.value = 'default';
+};
 
 const fetchProducts = async () => {
   try {
     const response = await axios.get('/api/products');
     products.value = response.data;
-  } catch (error) {
-    console.error("Error al cargar el catálogo:", error);
-  } finally {
-    loading.value = false;
-  }
+  } catch (error) { console.error(error); } finally { loading.value = false; }
 };
 
-const getImagePath = (imageName) => {
-    if (!imageName) return '/img/marcaDeAgua.png';
-    if (imageName.startsWith('http')) return imageName;
-    return `/img/${imageName}`; 
-};
+const getImagePath = (img) => img ? (img.startsWith('http') ? img : `/img/${img}`) : '/img/marcaDeAgua.png';
+const formatPrice = (p) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
+const truncate = (t, l) => t && t.length > l ? t.substring(0, l) + '...' : t;
 
-const handleImageError = (e) => {
-    e.target.src = '/img/marcaDeAgua.png';
-};
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price);
-};
-
-const truncate = (text, length) => {
-    if (!text) return '';
-    return text.length > length ? text.substring(0, length) + '...' : text;
-};
-
-onMounted(() => {
-    fetchProducts();
-});
+onMounted(fetchProducts);
 </script>
 
 <style scoped>
-/* --- NUEVA CLASE PARA FIJAR EL TAMAÑO DE LA IMAGEN EXACTAMENTE A 267x405 --- */
-.imagen-maqueta {
-  width: 100%;
-  max-width: 267px;       /* Ancho máximo de 267px */
-  height: 405px;          /* Alto fijo de 405px */
-  object-fit: cover;      /* Recorta la imagen para que encaje sin aplastarla o deformarla */
-  margin: 0 auto;         /* Centra la imagen dentro de la tarjeta */
-  display: block;
-  border-radius: 8px;     /* Redondea un poquito los bordes de la foto */
-}
-
-/* Estilo del input de búsqueda */
-.input-group-text { background-color: transparent; }
-.search-input:focus { border-color: #dee2e6; box-shadow: none; }
-
-/* Overlay Agotado */
-.overlay-agotado {
-    position: absolute; 
-    top: 0; left: 0; 
-    width: 100%; height: 100%; 
-    background: rgba(255,255,255,0.6); 
-    z-index: 5; display: flex; 
-    align-items: center; justify-content: center;
-}
-
-.badge-agotado {
-    background: #dc3545; color: white; 
-    padding: 10px 20px; font-weight: bold; 
-    transform: rotate(-15deg); font-size: 1.2rem; 
-    border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-/* Botón */
-.btn-primary {
-    background: linear-gradient(90deg, #007BFF, #00C6FF);
-    border: none; color: white; text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.btn-primary:hover {
-    transform: scale(1.02); box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-}
-
-/* Tarjeta y Flexbox */
-.tarjeta-producto {
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    background: #fff; border: 1px solid #eee; border-radius: 12px;
-    padding: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tarjeta-producto:hover {
-    transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-}
-
-/* Grid layout */
-.contenedor-productos {
-    display: grid; gap: 28px; width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    padding-bottom: 40px;
-}
-
-@media (min-width: 576px) and (max-width: 991.98px) {
-    .contenedor-productos { grid-template-columns: repeat(2, minmax(260px, 1fr)); }
-}
-
-@media (max-width: 575.98px) {
-    .contenedor-productos { grid-template-columns: 1fr; padding: 0 10px; }
-    .tarjeta-producto { padding: 12px; gap: 6px; border-radius: 10px; }
-    .tarjeta-producto .producto-precio { font-size: 1.2rem; margin: 4px 0; }
-    .tarjeta-producto .producto-descripcion { font-size: 0.85rem; min-height: auto; margin-bottom: 5px; }
-    .tarjeta-producto .btn { padding: 8px 16px; font-size: 0.9rem; }
-}
+.imagen-maqueta { width: 100%; max-width: 267px; height: 405px; object-fit: cover; margin: 0 auto; display: block; border-radius: 8px; }
+.btn-primary { background: linear-gradient(90deg, #007BFF, #00C6FF); border: none; transition: 0.2s; }
+.btn-primary:hover { transform: scale(1.02); }
+.tarjeta-producto { display: flex; flex-direction: column; align-items: center; text-align: center; background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 15px; transition: 0.3s; }
+.tarjeta-producto:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; }
+.contenedor-productos { display: grid; gap: 28px; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.overlay-agotado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 5; display: flex; align-items: center; justify-content: center; }
+.badge-agotado { background: #dc3545; color: white; padding: 10px 20px; font-weight: bold; transform: rotate(-15deg); border-radius: 5px; }
 </style>
