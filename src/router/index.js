@@ -19,6 +19,9 @@ import CartView from '../views/CartView.vue'
 import CheckoutView from '../views/CheckoutView.vue' 
 import OrderSuccessView from '../views/OrderSuccessView.vue' 
 
+
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -77,7 +80,19 @@ const router = createRouter({
       meta: { requiresAuth: true } // Protegida
     },
     { path: '/:pathMatch(.*)*', redirect: '/' }
-  ]
+  ],
+
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      // Si el usuario usa los botones de "Atrás" o "Adelante" del navegador, 
+      // lo dejamos exactamente en la posición donde estaba leyendo.
+      return savedPosition;
+    } else {
+      // Si hace clic en un enlace normal del menú o catálogo, 
+      // la página hace scroll hacia arriba de forma suave.
+      return { top: 0, behavior: 'smooth' };
+    }
+  }
 })
 
 // GUARDIA DE NAVEGACIÓN (Sin cambios)
