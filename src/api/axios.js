@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: '', // Lo dejamos vacío para que el proxy controle todo
+    // Lee la variable de entorno de Vite de forma dinámica
+    baseURL: import.meta.env.VITE_API_URL || '', 
     withCredentials: false, 
     headers: {
         'Accept': 'application/json',

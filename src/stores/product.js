@@ -13,12 +13,15 @@ export const useProductStore = defineStore('product', {
       this.loading = true
       this.error = null
       try {
-        // AÑADIMOS /api/
         const response = await api.get('/api/products')
-        this.products = response.data
+        
+        // CORRECCIÓN VITAL: Si es un array directo se asigna, si viene envuelto en .data se extrae.
+        this.products = Array.isArray(response.data) ? response.data : (response.data.data || [])
+        
       } catch (err) {
         this.error = 'Error al cargar productos'
         console.error(err)
+        this.products = []
       } finally {
         this.loading = false
       }
