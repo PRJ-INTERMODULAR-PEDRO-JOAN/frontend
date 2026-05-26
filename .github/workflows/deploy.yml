@@ -1,43 +1,43 @@
-name: Frontend CI/CD Pipeline
+name: Deploy Frontend Vue a AWS EC2
 
 on:
   push:
     branches:
-      - main # O la rama que prefieras para el paso a producción
+      - main 
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar el código
+      - name: 1. Descargar el código del repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
+      - name: 2. Configurar entorno Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Basado en el "engines" de tu package.json
+          node-version: '20' 
           cache: 'npm'
 
-      - name: Instalar dependencias
-        run: npm ci # Instalación limpia y segura
+      - name: 3. Instalar dependencias
+        run: npm ci
 
-      # NOTA: Tu package.json actual no tiene un script de test. 
-      # Si añades uno (ej. "test": "vitest"), descomenta la siguiente línea:
-      # - name: Ejecutar Tests
-      #   run: npm run test
+      # --- NUEVO PASO AÑADIDO ---
+      - name: 4. Reemplazar 'localhost' por la IP del Backend
+        run: |
+          echo "Cambiando localhost por ${{ secrets.BACKEND_IP }} en los archivos fuente..."
+          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
+      # --------------------------
 
-      - name: Construir el proyecto (Build)
+      - name: 5. Construir el proyecto (Generar carpeta dist)
         run: npm run build
 
-      - name: Desplegar al servidor
-        uses: appleboy/scp-action@v0.1.7
+      - name: 6. Subir la carpeta dist a AWS EC2 por SCP
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
-          # Carpeta de destino en tu servidor
           target: "/var/www/frontend"
-          # Evita crear la estructura completa de carpetas del repo, sube solo el contenido
           strip_components: 1
