@@ -22,12 +22,12 @@ jobs:
       - name: 3. Instalar dependencias
         run: npm ci
 
-      # --- PASO AÑADIDO: Reemplazar localhost por IP y puerto 80 ---
-      - name: 4. Cambiar localhost por la IP del Backend
+      - name: 4. Cambiar localhost por la IP de la máquina
         run: |
-          echo "Reemplazando 'localhost' por '${{ secrets.BACKEND_IP }}:80' en el código fuente..."
-          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}:80/g' {} +
-      # --------------------------------------------------------------
+          echo "Reemplazando 'localhost' por '${{ secrets.BACKEND_IP }}' en todos los archivos..."
+          # Busca en la carpeta src y en los archivos .env para cambiar localhost por la IP
+          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
+          find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
 
       - name: 5. Construir el proyecto (Generar carpeta dist)
         run: npm run build
