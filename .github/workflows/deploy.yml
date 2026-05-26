@@ -22,17 +22,11 @@ jobs:
       - name: 3. Instalar dependencias
         run: npm ci
 
-      # --- NUEVO PASO AÑADIDO ---
-      - name: 4. Reemplazar 'localhost' por la IP del Backend
-        run: |
-          echo "Cambiando localhost por ${{ secrets.BACKEND_IP }} en los archivos fuente..."
-          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
-      # --------------------------
-
-      - name: 5. Construir el proyecto (Generar carpeta dist)
+      # Ya no hace falta el paso de reemplazar localhost por IPs duras!
+      - name: 4. Construir el proyecto (Generar carpeta dist)
         run: npm run build
 
-      - name: 6. Subir la carpeta dist a AWS EC2 por SCP
+      - name: 5. Subir la carpeta dist a AWS EC2 por SCP
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
