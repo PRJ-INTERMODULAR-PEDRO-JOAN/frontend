@@ -29,6 +29,11 @@ jobs:
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
 
+      - name: 4.5. Crear archivo .env para producción
+        run: |
+          echo "VITE_API_URL=http://${{ secrets.BACKEND_IP }}.nip.io" > .env
+          echo "VITE_N8N_WEBHOOK_URL=http://${{ secrets.BACKEND_IP }}:5678/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
+
       - name: 5. Construir el proyecto (Generar carpeta dist)
         run: npm run build
 
