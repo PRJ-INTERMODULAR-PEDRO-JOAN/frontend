@@ -22,14 +22,21 @@ jobs:
       - name: 3. Instalar dependencias
         run: npm ci
 
-      - name: 4. Cambiar localhost por la IP de la máquina
+      - name: 4. Escanear y corregir IPs en el código
         run: |
-          echo "Reemplazando 'localhost' por '${{ secrets.BACKEND_IP }}' en todos los archivos..."
-          # Busca en la carpeta src y en los archivos .env para cambiar localhost por la IP
+          echo "Limpiando referencias antiguas o incorrectas..."
+          
+          # 1. Cambiar 'localhost' por la IP del Backend
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
+          
+          # 2. Cambiar la IP del Frontend (3.81.245.213) por la IP del Backend
+          # Esto arreglará cualquier archivo donde hayas puesto la IP equivocada a fuego
+          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
+          find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
 
-      - name: 4.5. Crear archivo .env para producción
+      # (Opcional pero recomendado): Asegurarnos de que el puerto de n8n se inyecta bien
+      - name: 4.5. Forzar variables de entorno correctas
         run: |
           echo "VITE_API_URL=http://${{ secrets.BACKEND_IP }}.nip.io" > .env
           echo "VITE_N8N_WEBHOOK_URL=http://${{ secrets.BACKEND_IP }}:5678/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
