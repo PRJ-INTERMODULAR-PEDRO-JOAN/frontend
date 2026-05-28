@@ -1,38 +1,179 @@
-# frontend
+# 🎨 PrintHub - Frontend (Vue 3)
 
-This template should help get you started developing with Vue 3 in Vite.
+Este repositorio contiene la interfaz visual del proyecto e-commerce **PrintHub**. La aplicación funciona como una SPA desacoplada que consume la API REST del backend Laravel.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+# 🏗️ 1. Arquitectura Frontend
 
-## Recommended Browser Setup
+La aplicación visual es independiente del backend y puede desplegarse por separado.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Tecnologías utilizadas
 
-## Customize configuration
+- Vue 3 (Composition API)
+- Vite
+- Pinia
+- Vue Router
+- Axios
+- Bootstrap 5.3
+- CSS Responsive
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+# 🐳 2. Desarrollo Local con Docker
 
-```sh
+## Requisitos
+
+- Docker
+- Docker Compose
+
+---
+
+## Instalación
+
+### Clonar repositorio
+
+```bash
+git clone <repo-frontend>
+```
+
+---
+
+### Variables de entorno
+
+```bash
+cp .env.example .env
+```
+
+---
+
+### Configurar API Backend
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
+```
+
+---
+
+### Levantar contenedores
+
+```bash
+docker-compose up -d --build
+```
+
+---
+
+La aplicación estará disponible en:
+
+```txt
+http://localhost:5173
+```
+
+Vite aplicará Hot Reload automáticamente.
+
+---
+
+> 📸 **[CAPTURA 1: DOCKER FRONTEND]**
+>
+> `![Docker Frontend](docs/docker-frontend.png)`
+
+---
+
+# 🚀 3. CI/CD Frontend
+
+El frontend tiene un pipeline independiente del backend.
+
+---
+
+## Instalación dependencias
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
-npm run dev
-```
+## Build producción
 
-### Compile and Minify for Production
-
-```sh
+```bash
 npm run build
 ```
+
+Esto genera:
+
+```txt
+/dist
+```
+
+---
+
+## Deploy automático
+
+Los archivos compilados se despliegan en:
+
+- AWS + Nginx
+- Amazon S3
+- CloudFront
+
+---
+
+# 🔒 4. Seguridad y HTTPS
+
+Producción disponible mediante:
+
+```txt
+https://projecteXX.ddaw.es
+```
+
+HTTPS gestionado con Let's Encrypt.
+
+---
+
+> 📸 **[CAPTURA 2: PIPELINE FRONTEND]**
+>
+> `![CI/CD Frontend](docs/cicd-frontend.png)`
+
+---
+
+# 📈 5. Escalabilidad
+
+## Entorno Desarrollo
+
+- Servidor Vite local
+- Hot Reload
+
+---
+
+## Producción
+
+La build Vue genera archivos estáticos:
+
+- HTML
+- CSS
+- JavaScript
+
+Distribuibles mediante CDN para soportar tráfico elevado.
+
+---
+
+# 👥 6. Normas de Contribución
+
+## Separación de Responsabilidades
+
+- Solo lógica visual
+- No incluir lógica backend
+
+---
+
+## Pull Requests
+
+- Validación visual obligatoria
+- Revisión antes de merge
+
+---
+
+## Diseño
+
+- Priorizar Bootstrap
+- Mantener responsive design
+- Evitar CSS redundante
