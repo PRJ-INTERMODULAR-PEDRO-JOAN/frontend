@@ -1,53 +1,80 @@
 # 🎨 PrintHub - Frontend (Vue 3)
 
-Este repositorio contiene la interfaz visual del proyecto e-commerce **PrintHub**. La aplicación funciona como una SPA desacoplada que consume la API REST del backend Laravel.
+# 📖 Descripción General
 
----
+Este repositorio contiene el frontend SPA del proyecto **PrintHub**, accesible mediante:
 
-# 🏗️ 1. Arquitectura Frontend
+```txt
+https://projecte01.ddaw.es
+```
 
-La aplicación visual es independiente del backend y puede desplegarse por separado.
+La aplicación ha sido desarrollada utilizando Vue 3 y consume la API REST desplegada en:
 
-## Tecnologías utilizadas
-
-- Vue 3 (Composition API)
-- Vite
-- Pinia
-- Vue Router
-- Axios
-- Bootstrap 5.3
-- CSS Responsive
-
----
-
-# 🐳 2. Desarrollo Local con Docker
-
-## Requisitos
-
-- Docker
-- Docker Compose
-
----
-
-## Instalación
-
-### Clonar repositorio
-
-```bash
-git clone <repo-frontend>
+```txt
+https://api.projecte01.ddaw.es
 ```
 
 ---
 
-### Variables de entorno
+# 🌐 1. DNS Y DOMINIOS
 
-```bash
-cp .env.example .env
+## Dominio principal
+
+```txt
+projecte01.ddaw.es
 ```
 
 ---
 
-### Configurar API Backend
+## Subdominios
+
+| Servicio    | Dominio                |
+| ----------- | ---------------------- |
+| Frontend    | projecte01.ddaw.es     |
+| Backend API | api.projecte01.ddaw.es |
+
+---
+
+## HTTPS
+
+Todo el sistema utiliza certificados válidos:
+
+```txt
+Let's Encrypt
+```
+
+---
+
+> 📸 **CAPTURA HTTPS**
+>
+> `![HTTPS](docs/https-front.png)`
+
+---
+
+# 🏗️ 2. ARQUITECTURA FRONTEND
+
+## Tecnologías
+
+| Tecnología  | Uso        |
+| ----------- | ---------- |
+| Vue 3       | Framework  |
+| Vite        | Build Tool |
+| Pinia       | Estado     |
+| Vue Router  | Navegación |
+| Axios       | HTTP       |
+| Bootstrap 5 | UI         |
+
+---
+
+# 🐳 3. ENTORNO LOCAL DOCKER
+
+# Objetivo
+
+Permitir ejecutar el frontend sin instalar Node.js.
+
+---
+
+## Variables entorno
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000/api
@@ -55,7 +82,16 @@ VITE_API_BASE_URL=http://localhost:8000/api
 
 ---
 
-### Levantar contenedores
+## Docker
+
+Servicios:
+
+- frontend
+- nginx
+
+---
+
+## Levantar entorno
 
 ```bash
 docker-compose up -d --build
@@ -63,25 +99,25 @@ docker-compose up -d --build
 
 ---
 
-La aplicación estará disponible en:
+## Acceso local
 
 ```txt
 http://localhost:5173
 ```
 
-Vite aplicará Hot Reload automáticamente.
-
 ---
 
-> 📸 **[CAPTURA 1: DOCKER FRONTEND]**
+> 📸 **CAPTURA DOCKER FRONTEND**
 >
 > `![Docker Frontend](docs/docker-frontend.png)`
 
 ---
 
-# 🚀 3. CI/CD Frontend
+# 🚀 4. CI/CD FRONTEND
 
-El frontend tiene un pipeline independiente del backend.
+## Pipeline independiente
+
+El frontend tiene despliegue independiente del backend.
 
 ---
 
@@ -99,81 +135,108 @@ npm install
 npm run build
 ```
 
-Esto genera:
-
-```txt
-/dist
-```
-
 ---
 
 ## Deploy automático
 
-Los archivos compilados se despliegan en:
+El contenido `/dist` se despliega automáticamente hacia:
 
-- AWS + Nginx
-- Amazon S3
+- Nginx AWS
+- S3
 - CloudFront
 
 ---
 
-# 🔒 4. Seguridad y HTTPS
+# 👤 Usuario deployer
 
-Producción disponible mediante:
+El despliegue automático utiliza:
 
 ```txt
-https://projecteXX.ddaw.es
+deployer
 ```
 
-HTTPS gestionado con Let's Encrypt.
+---
+
+## Funciones
+
+- Deploy frontend
+- Gestión releases
+- SSH automatizado
+- Integración GitHub Actions
 
 ---
 
-> 📸 **[CAPTURA 2: PIPELINE FRONTEND]**
->
-> `![CI/CD Frontend](docs/cicd-frontend.png)`
+## Flujo despliegue
+
+```txt
+Commit → Pipeline → Build → SSH deployer → Producción
+```
 
 ---
 
-# 📈 5. Escalabilidad
+# 🔐 5. SEGURIDAD
 
-## Entorno Desarrollo
+## HTTPS obligatorio
 
-- Servidor Vite local
-- Hot Reload
+Frontend accesible únicamente mediante:
+
+```txt
+https://projecte01.ddaw.es
+```
 
 ---
 
-## Producción
+## Seguridad aplicada
 
-La build Vue genera archivos estáticos:
+- HTTPS
+- Security Groups AWS
+- Certificados Let's Encrypt
+- Variables entorno protegidas
+
+---
+
+# 📈 6. ESCALABILIDAD
+
+La build final genera archivos estáticos:
 
 - HTML
 - CSS
 - JavaScript
 
-Distribuibles mediante CDN para soportar tráfico elevado.
+Distribuibles mediante CDN global.
 
 ---
 
-# 👥 6. Normas de Contribución
+# 👥 7. NORMAS CONTRIBUCIÓN
 
-## Separación de Responsabilidades
+## Reglas
 
-- Solo lógica visual
-- No incluir lógica backend
-
----
-
-## Pull Requests
-
-- Validación visual obligatoria
-- Revisión antes de merge
+- Pull Requests obligatorios
+- Revisión visual
+- Responsive obligatorio
+- Uso Bootstrap prioritario
 
 ---
 
-## Diseño
+# 📜 8. LICENCIA
 
-- Priorizar Bootstrap
-- Mantener responsive design
-- Evitar CSS redundante
+Proyecto educativo desarrollado para DDAW + NUV.
+
+---
+
+# 👨‍💻 9. EQUIPO DESARROLLO
+
+Proyecto desarrollado por el equipo PrintHub.
+
+---
+
+# 📌 10. ESTADO PROYECTO
+
+| Característica    | Estado |
+| ----------------- | ------ |
+| Vue SPA           | ✅     |
+| Docker            | ✅     |
+| HTTPS             | ✅     |
+| AWS               | ✅     |
+| CI/CD             | ✅     |
+| Deploy automático | ✅     |
