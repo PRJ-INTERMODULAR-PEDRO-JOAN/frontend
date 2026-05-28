@@ -22,7 +22,7 @@ jobs:
       - name: 3. Instalar dependencias
         run: npm ci
 
-      - name: 4. Escanear y corregir IPs en el código
+      - name: 4. Escanear y corregir referencias en el código
         run: |
           echo "Limpiando referencias antiguas o incorrectas..."
           
@@ -30,17 +30,17 @@ jobs:
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           
-          # 2. Cambiar la IP del Frontend (3.81.245.213) por el dominio de la API
+          # 2. Cambiar la IP antigua por el dominio de la API
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
 
-      - name: 4.5. Forzar variables de entorno correctas
+      - name: 4.5. Forzar variables de entorno correctas (Todo por HTTPS seguro)
         run: |
-          # La API usa HTTPS estándar (puerto 443 implícito)
+          # 1. API principal
           echo "VITE_API_URL=https://${{ secrets.BACKEND_IP }}" > .env
           
-          # Webhook de n8n forzando el puerto 5678 como has pedido
-          echo "VITE_N8N_WEBHOOK_URL=https://${{ secrets.BACKEND_IP }}:5678/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
+          # 2. Webhook de n8n (Sin el puerto 5678, Nginx hará el proxy invisible)
+          echo "VITE_N8N_WEBHOOK_URL=https://${{ secrets.BACKEND_IP }}/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
 
       - name: 5. Construir el proyecto (Generar carpeta dist)
         run: npm run build
