@@ -22,27 +22,28 @@ jobs:
       - name: 3. Instalar dependencias
         run: npm ci
 
-      - name: 4. Escanear y corregir referencias en el código
+      - name: 4. Escanear y corregir IPs/Puertos en el código Vue
         run: |
           echo "Limpiando referencias antiguas o incorrectas..."
           
-          # Cambiar 'localhost' por el dominio de la API
+          # Cambiar localhost por el dominio
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
-          find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           
-          # Cambiar la IP antigua por el dominio de la API
+          # Cambiar IP antigua por el dominio
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
-          find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
+          
+          # ¡VITAL! Borrar el puerto :5678 de cualquier archivo Vue para forzar HTTPS por el puerto 443
+          find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/:5678//g' {} +
 
-      - name: 4.5. Forzar variables de entorno correctas (Todo por HTTPS seguro)
+      - name: 4.5. Forzar variables de entorno correctas (Puro HTTPS)
         run: |
-          # 1. API principal
+          # API
           echo "VITE_API_URL=https://${{ secrets.BACKEND_IP }}" > .env
           
-          # 2. Webhook de n8n para el Chat
+          # Chatbot (Sin puerto 5678)
           echo "VITE_N8N_WEBHOOK_URL=https://${{ secrets.BACKEND_IP }}/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
           
-          # 3. Webhook de n8n para el Formulario (NUEVO)
+          # Formulario (Sin puerto 5678)
           echo "VITE_N8N_FORM_URL=https://${{ secrets.BACKEND_IP }}/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" >> .env
 
       - name: 5. Construir el proyecto (Generar carpeta dist)
