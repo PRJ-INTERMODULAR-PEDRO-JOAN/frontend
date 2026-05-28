@@ -26,11 +26,11 @@ jobs:
         run: |
           echo "Limpiando referencias antiguas o incorrectas..."
           
-          # 1. Cambiar 'localhost' por el dominio de la API
+          # Cambiar 'localhost' por el dominio de la API
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/localhost/${{ secrets.BACKEND_IP }}/g' {} +
           
-          # 2. Cambiar la IP antigua por el dominio de la API
+          # Cambiar la IP antigua por el dominio de la API
           find src/ -type f \( -name "*.js" -o -name "*.vue" \) -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
           find . -maxdepth 1 -type f -name ".env*" -exec sed -i 's/3.81.245.213/${{ secrets.BACKEND_IP }}/g' {} +
 
@@ -39,8 +39,11 @@ jobs:
           # 1. API principal
           echo "VITE_API_URL=https://${{ secrets.BACKEND_IP }}" > .env
           
-          # 2. Webhook de n8n (Sin el puerto 5678, Nginx hará el proxy invisible)
+          # 2. Webhook de n8n para el Chat
           echo "VITE_N8N_WEBHOOK_URL=https://${{ secrets.BACKEND_IP }}/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat" >> .env
+          
+          # 3. Webhook de n8n para el Formulario (NUEVO)
+          echo "VITE_N8N_FORM_URL=https://${{ secrets.BACKEND_IP }}/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" >> .env
 
       - name: 5. Construir el proyecto (Generar carpeta dist)
         run: npm run build
