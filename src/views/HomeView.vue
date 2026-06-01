@@ -30,7 +30,7 @@
               <div class="position-absolute top-0 start-0 bg-danger text-white fw-bold px-4 py-2 shadow" style="font-size: 1.5rem; z-index: 10; border-bottom-right-radius: 10px;">
                 🔥 -50% HOY
               </div>
-              <img :src="getImagePath(ofertaDia.image)" :alt="ofertaDia.name" class="img-fluid" style="max-height: 350px; object-fit: contain;">
+              <img :src="getImagePath(ofertaDia.image)" :alt="ofertaDia.name" loading="lazy" class="img-fluid" style="max-height: 350px; object-fit: contain;">
             </div>
 
             <div class="col-md-6 p-5 text-center text-md-start">
@@ -77,7 +77,7 @@
                 <span class="badge bg-danger shadow animate-pulse">🔥 -50%</span>
               </div>
 
-              <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
+              <img :src="getImagePath(product.image)" :alt="product.name" loading="lazy" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
               <h3 class="texto-principal">{{ product.name }}</h3>
               <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
@@ -114,7 +114,7 @@
                 <span class="badge-agotado">AGOTADO</span>
               </div>
 
-              <img :src="getImagePath(impresora.image)" :alt="impresora.name" class="imagen-maqueta" @error="handleImageError" :style="impresora.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
+              <img :src="getImagePath(impresora.image)" :alt="impresora.name" loading="lazy" class="imagen-maqueta" @error="handleImageError" :style="impresora.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
               <h3 class="texto-principal">{{ impresora.name }}</h3>
               <p class="producto-descripcion">{{ truncate(impresora.description, 80) }}</p>
@@ -138,7 +138,7 @@
         <div class="container">
             <div class="row gy-4 sobre-nosotros-fila">
                 <div class="col-12 col-md-12 col-lg-5 gif-sobre-nosotros">
-                    <img src="/img/impresora.gif" alt="GIF PrintHub" class="img-fluid rounded-4 shadow-sm" />
+                    <img src="/img/impresora.gif" alt="GIF PrintHub" loading="lazy" class="img-fluid rounded-4 shadow-sm" />
                 </div>
                 <div class="col-12 col-md-12 col-lg-7 texto-sobre-nosotros">
                     <h2 class="texto-principal">Sobre Nosotros</h2>
@@ -154,7 +154,7 @@
             <div class="video-wrapper">
                 <h2 class="texto-principal mb-4 text-center fw-bold">Descubre Más Sobre PrintHub</h2>
                 <div class="video-contenedor overflow-hidden">
-                    <video autoplay loop muted playsinline class="img-fluid w-100">
+                    <video autoplay loop muted playsinline preload="none" class="img-fluid w-100">
                         <source src="/img/Presentacion_Clientes_sin_con.mp4" type="video/mp4" />
                     </video>
                 </div>
@@ -199,7 +199,7 @@
                 <span class="badge-agotado">AGOTADO</span>
               </div>
 
-              <img :src="getImagePath(product.image)" :alt="product.name" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
+              <img :src="getImagePath(product.image)" :alt="product.name" loading="lazy" class="imagen-maqueta" @error="handleImageError" :style="product.stock <= 0 ? 'filter: grayscale(100%); opacity: 0.5;' : ''">
 
               <h3 class="texto-principal">{{ product.name }}</h3>
               <p class="producto-descripcion">{{ truncate(product.description, 80) }}</p>
@@ -228,11 +228,9 @@ import axios from '../api/axios';
 const products = ref([]);
 const loading = ref(true);
 
-// --- FETCH DATA ---
 const fetchProducts = async () => {
   try {
     const response = await axios.get('/api/products');
-    // CORRECCIÓN: Evita errores map/find si Laravel devuelve la lista estructurada en un objeto
     products.value = Array.isArray(response.data) ? response.data : (response.data.data || []);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -278,17 +276,11 @@ onMounted(() => {
         localStorage.getItem('recently_viewed') || '[]'
     );
 
-    // =========================
-    // CSS OFICIAL N8N
-    // =========================
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
     document.head.appendChild(link);
 
-    // =========================
-    // ESTILOS PERSONALIZADOS
-    // =========================
     const style = document.createElement('style');
     style.innerHTML = `
     :root {
@@ -328,13 +320,9 @@ onMounted(() => {
     `;
     document.head.appendChild(style);
 
-    // =========================
-    // IMPORT CHAT N8N
-    // =========================
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
         .then(module => {
             module.createChat({
-                // CORRECCIÓN: Usa la variable de entorno para cambiar entre el proxy local y la IP en AWS
                 webhookUrl: import.meta.env.VITE_N8N_WEBHOOK_URL,
                 mode: 'window',
                 showWelcomeScreen: true,
@@ -361,18 +349,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ESTILOS BASE MODO CLARO */
 .banner-oferta-seccion { background: linear-gradient(135deg, #1a1a1a, #2c3e50); }
 .oferta-card { background-color: #ffffff; color: #212529; }
 .oferta-img-container { background-color: #f8f9fa; }
 .seccion-recientes { background-color: #f8f9fa; border-top: 1px solid #eaeaea;}
 .tarjeta-testimonio { background-color: #ffffff; border: 1px solid #eaeaea; }
-
 @keyframes scrollText { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
 @keyframes pulseGlow { 0% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); text-shadow: 0 0 12px rgba(255, 255, 255, 0.6); } 100% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } }
 .animate-pulse { animation: pulse 2s infinite; }
 @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
-
 .tarjeta-producto { position: relative; overflow: hidden; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; padding: 15px; transition: 0.3s; }
 .tarjeta-producto:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 .overlay-agotado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 5; display: flex; align-items: center; justify-content: center; }
@@ -384,60 +369,16 @@ onMounted(() => {
 </style>
 
 <style>
-/* SOPORTE TOTAL PARA MODO OSCURO (DARK MODE) EN EL HOME */
-[data-bs-theme="dark"] body,
-[data-bs-theme="dark"] .contenido-principal,
-[data-bs-theme="dark"] .productos-destacados,
-[data-bs-theme="dark"] .seccion-sobre-nosotros,
-[data-bs-theme="dark"] .seccion-testimonios {
-    background-color: #121212 !important;
-}
-[data-bs-theme="dark"] .seccion-alterna,
-[data-bs-theme="dark"] .seccion-recientes {
-    background-color: #1a1a1a !important;
-    border-top: 1px solid #2a2a2a !important;
-}
-[data-bs-theme="dark"] .texto-principal,
-[data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3,
-[data-bs-theme="dark"] .cita-testimonio {
-    color: #f8f9fa !important;
-}
-[data-bs-theme="dark"] .text-muted,
-[data-bs-theme="dark"] .producto-descripcion,
-[data-bs-theme="dark"] .descripcion-oferta {
-    color: #adb5bd !important;
-}
-[data-bs-theme="dark"] .tarjeta-producto,
-[data-bs-theme="dark"] .tarjeta-testimonio {
-    background-color: #242424 !important;
-    border: 1px solid #383838 !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-}
-[data-bs-theme="dark"] .tarjeta-producto:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
-}
-[data-bs-theme="dark"] .overlay-agotado {
-    background: rgba(18, 18, 18, 0.75) !important;
-}
-[data-bs-theme="dark"] .oferta-card {
-    background-color: #242424 !important;
-    border: 1px solid #383838 !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
-}
-[data-bs-theme="dark"] .oferta-img-container {
-    background-color: #161616 !important;
-}
-[data-bs-theme="dark"] .btn-oferta-detalle,
-[data-bs-theme="dark"] .btn-volver-ver {
-    color: #f8f9fa !important;
-    border-color: #666 !important;
-}
-[data-bs-theme="dark"] .btn-oferta-detalle:hover,
-[data-bs-theme="dark"] .btn-volver-ver:hover {
-    background-color: #383838 !important;
-    border-color: #888 !important;
-}
-[data-bs-theme="dark"] .pie-pagina li {
-  color : #FFF !important;
-}
+[data-bs-theme="dark"] body, [data-bs-theme="dark"] .contenido-principal, [data-bs-theme="dark"] .productos-destacados, [data-bs-theme="dark"] .seccion-sobre-nosotros, [data-bs-theme="dark"] .seccion-testimonios { background-color: #121212 !important; }
+[data-bs-theme="dark"] .seccion-alterna, [data-bs-theme="dark"] .seccion-recientes { background-color: #1a1a1a !important; border-top: 1px solid #2a2a2a !important; }
+[data-bs-theme="dark"] .texto-principal, [data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3, [data-bs-theme="dark"] .cita-testimonio { color: #f8f9fa !important; }
+[data-bs-theme="dark"] .text-muted, [data-bs-theme="dark"] .producto-descripcion, [data-bs-theme="dark"] .descripcion-oferta { color: #adb5bd !important; }
+[data-bs-theme="dark"] .tarjeta-producto, [data-bs-theme="dark"] .tarjeta-testimonio { background-color: #242424 !important; border: 1px solid #383838 !important; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; }
+[data-bs-theme="dark"] .tarjeta-producto:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important; }
+[data-bs-theme="dark"] .overlay-agotado { background: rgba(18, 18, 18, 0.75) !important; }
+[data-bs-theme="dark"] .oferta-card { background-color: #242424 !important; border: 1px solid #383838 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important; }
+[data-bs-theme="dark"] .oferta-img-container { background-color: #161616 !important; }
+[data-bs-theme="dark"] .btn-oferta-detalle, [data-bs-theme="dark"] .btn-volver-ver { color: #f8f9fa !important; border-color: #666 !important; }
+[data-bs-theme="dark"] .btn-oferta-detalle:hover, [data-bs-theme="dark"] .btn-volver-ver:hover { background-color: #383838 !important; border-color: #888 !important; }
+[data-bs-theme="dark"] .pie-pagina li { color : #FFF !important; }
 </style>

@@ -24,6 +24,7 @@
                     </div>
                     <img 
                         :src="getImagePath(product.image)" 
+                        loading="lazy"
                         class="img-fluid rounded" 
                         :alt="product.name" 
                         @error="handleImageError"
@@ -87,15 +88,15 @@
             <div class="accordion shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
               <div class="accordion-item border-0 border-bottom">
                 <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">¿De qué material está fabricado?</button></h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Todas nuestras maquetas y figuras están impresas en <strong>PLA Premium o Resina de alta resolución</strong>, asegurando detalles precisos y alta durabilidad. El acabado puede tener ligeras texturas naturales del proceso de impresión 3D.</div></div>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Todas nuestras maquetas y figuras están impresas en <strong>PLA Premium o Resina de alta resolución</strong>, asegurando detalles precisos y alta durabilidad.</div></div>
               </div>
               <div class="accordion-item border-0 border-bottom">
                 <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">¿Cuáles son los tiempos de envío?</button></h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Si el producto tiene stock, el envío tarda entre <strong>24 y 48 horas laborables</strong>. Si solicitas un producto personalizado que debemos imprimir desde cero, el tiempo de producción y envío suele ser de 3 a 5 días.</div></div>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Si el producto tiene stock, el envío tarda entre <strong>24 y 48 horas laborables</strong>.</div></div>
               </div>
               <div class="accordion-item border-0">
                 <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">¿Viene pintado como en la foto?</button></h2>
-                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Sí, las fotos de nuestro catálogo corresponden al <strong>producto final real</strong>. Aquellos productos marcados como "Kit para pintar" llegarán en color gris neutro, listos para tu imprimación.</div></div>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body text-muted">Sí, las fotos de nuestro catálogo corresponden al <strong>producto final real</strong>.</div></div>
               </div>
             </div>
           </div>
@@ -122,7 +123,6 @@
                             <div class="ms-3 w-100">
                                 <div class="d-flex justify-content-between align-items-center"><h6 class="mb-0 fw-bold">{{ comment.user.name }}</h6><small class="text-muted">{{ new Date(comment.created_at).toLocaleDateString() }}</small></div>
                                 <div class="text-warning small mb-1">{{ '⭐'.repeat(comment.rating) }}</div><p class="mb-1 text-secondary">{{ comment.text }}</p>
-                                <div v-if="auth.user && (auth.user.id === comment.user_id || auth.user.role === 'admin')" class="mt-2"><button @click="deleteComment(comment.id)" class="btn btn-sm btn-link text-danger p-0 text-decoration-none">🗑️ Borrar</button></div>
                             </div>
                         </div>
                     </div>
@@ -159,6 +159,7 @@
       <div class="d-flex align-items-center gap-3">
         <img
           :src="getImagePath(product.image)"
+          loading="lazy"
           class="rounded shadow-sm d-none d-sm-block"
           style="width: 50px; height: 50px; object-fit: cover;"
         >
@@ -226,9 +227,7 @@ const isLiked = ref(false);
 const likesCount = ref(0);
 const showAddedMessage = ref(false);
 
-/* 🔥 BARRA STICKY */
 const showStickyCart = ref(false);
-
 const newComment = ref({ rating: 5, text: '' });
 
 const averageRating = computed(() => {
@@ -246,17 +245,11 @@ const filteredComments = computed(() => {
 
 const canAddToCart = computed(() => {
     if (!product.value || product.value.stock <= 0) return false;
-
-    const itemInCart = cartStore.cart.find(
-        item => item.id === product.value.id
-    );
-
+    const itemInCart = cartStore.cart.find(item => item.id === product.value.id);
     const quantityInCart = itemInCart ? itemInCart.quantity : 0;
-
     return (quantityInCart + 1) <= product.value.stock;
 });
 
-/* 🔥 SCROLL PARA MOSTRAR LA BARRA */
 const handleScroll = () => {
     showStickyCart.value = window.scrollY > 450;
 };
@@ -271,9 +264,7 @@ const handleBuyNow = () => {
 const checkLikeStatus = async (id) => {
     try {
         const likeRes = await axios.get(`/api/products/${id}/like`);
-
         isLiked.value = likeRes.data.is_liked;
-
         if (likeRes.data.likes_count !== undefined) {
             likesCount.value = likeRes.data.likes_count;
         }
@@ -284,7 +275,6 @@ const checkLikeStatus = async (id) => {
 
 const loadProductData = async (id) => {
     loading.value = true;
-
     try {
         const [prodRes, commRes] = await Promise.all([
             axios.get(`/api/products/${id}`),
@@ -296,12 +286,8 @@ const loadProductData = async (id) => {
         likesCount.value = prodRes.data.likes_count || 0;
 
         if (product.value) {
-            let viewed = JSON.parse(
-                localStorage.getItem('recently_viewed') || '[]'
-            );
-
+            let viewed = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
             viewed = viewed.filter(p => p.id !== product.value.id);
-
             viewed.unshift({
                 id: product.value.id,
                 name: product.value.name,
@@ -310,17 +296,10 @@ const loadProductData = async (id) => {
                 description: product.value.description,
                 stock: product.value.stock
             });
-
             if (viewed.length > 4) viewed.pop();
-
-            localStorage.setItem(
-                'recently_viewed',
-                JSON.stringify(viewed)
-            );
+            localStorage.setItem('recently_viewed', JSON.stringify(viewed));
         }
-
         if (auth.user) await checkLikeStatus(id);
-
     } catch (error) {
         console.error(error);
     } finally {
@@ -332,7 +311,6 @@ const showSocialProof = ref(false);
 const socialProofText = ref('');
 const proofs = ["🔥 <b>3 personas</b> están viendo esto.", "📦 <b>Alguien</b> compró esto hace poco.", "❤️ <b>5 personas</b> lo tienen en favoritos."];
 
-// Llama a esto dentro de tu onMounted o loadProductData
 const triggerSocialProof = () => {
     setTimeout(() => {
         socialProofText.value = proofs[Math.floor(Math.random()*proofs.length)];
@@ -343,12 +321,9 @@ const triggerSocialProof = () => {
 onMounted(() => {
     loadProductData(route.params.id);
     triggerSocialProof();
-
-    /* 🔥 ACTIVAR LISTENER */
     window.addEventListener('scroll', handleScroll);
 });
 
-/* 🔥 LIMPIAR LISTENER */
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll);
 });
@@ -364,26 +339,16 @@ watch(() => route.params.id, (newId) => {
 });
 
 const animateLike = ref(false);
-
 const toggleLike = async () => {
     if (!auth.user) return alert("Debes iniciar sesión.");
-
     try {
-        const res = await axios.post(
-            `/api/products/${product.value.id}/like`
-        );
-
+        const res = await axios.post(`/api/products/${product.value.id}/like`);
         isLiked.value = res.data.status === 'liked';
         likesCount.value = res.data.likes_count;
-
         if (isLiked.value) {
             animateLike.value = true;
-
-            setTimeout(() => {
-                animateLike.value = false;
-            }, 600);
+            setTimeout(() => { animateLike.value = false; }, 600);
         }
-
     } catch (e) {
         console.error(e);
     }
@@ -391,20 +356,11 @@ const toggleLike = async () => {
 
 const submitComment = async () => {
     try {
-        await axios.post(
-            `/api/products/${product.value.id}/comments`,
-            newComment.value
-        );
-
-        const res = await axios.get(
-            `/api/products/${product.value.id}/comments`
-        );
-
+        await axios.post(`/api/products/${product.value.id}/comments`, newComment.value);
+        const res = await axios.get(`/api/products/${product.value.id}/comments`);
         comments.value = res.data;
-
         newComment.value.text = '';
         newComment.value.rating = 5;
-
     } catch (e) {
         alert("Error al publicar.");
     }
@@ -412,16 +368,10 @@ const submitComment = async () => {
 
 const deleteComment = async (id) => {
     if (!confirm("¿Borrar?")) return;
-
     try {
         await axios.delete(`/api/comments/${id}`);
-
-        const res = await axios.get(
-            `/api/products/${product.value.id}/comments`
-        );
-
+        const res = await axios.get(`/api/products/${product.value.id}/comments`);
         comments.value = res.data;
-
     } catch (e) {
         alert("Error al borrar.");
     }
@@ -429,79 +379,40 @@ const deleteComment = async (id) => {
 
 const handleAddToCart = () => {
     if (canAddToCart.value) {
-
         cartStore.addToCart(product.value);
-
         showAddedMessage.value = true;
-
-        setTimeout(() => {
-            showAddedMessage.value = false;
-        }, 2000);
+        setTimeout(() => { showAddedMessage.value = false; }, 2000);
     }
 };
 
 const getImagePath = (img) => {
     if (!img) return '/img/marcaDeAgua.png';
-
     if (img.startsWith('http')) return img;
-
     return `/img/${img}`;
 };
 
-const handleImageError = (e) => {
-    e.target.src = '/img/marcaDeAgua.png';
-};
-
+const handleImageError = (e) => { e.target.src = '/img/marcaDeAgua.png'; };
 const formatPrice = (p) => {
     if (p === undefined || p === null) return '0,00 €';
-
-    return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'EUR'
-    }).format(p);
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
 };
 </script>
 
 <style scoped>
-
-/* 🔥 BARRA STICKY */
-
-.sticky-cart-bar {
-    background-color: #ffffff;
-    backdrop-filter: blur(10px);
-}
-
-.slide-up-enter-active,
-.slide-up-leave-active {
-    transition: all 0.3s ease-out;
-}
-
-.slide-up-enter-from,
-.slide-up-leave-to {
-    transform: translateY(100%);
-    opacity: 0;
-}
-
-/* DARK MODE */
-
-[data-bs-theme="dark"] .sticky-cart-bar {
-    background-color: #1e1e1e !important;
-    border-top-color: #333 !important;
-}
+.sticky-cart-bar { background-color: #ffffff; backdrop-filter: blur(10px); }
+.slide-up-enter-active, .slide-up-leave-active { transition: all 0.3s ease-out; }
+.slide-up-enter-from, .slide-up-leave-to { transform: translateY(100%); opacity: 0; }
+[data-bs-theme="dark"] .sticky-cart-bar { background-color: #1e1e1e !important; border-top-color: #333 !important; }
 .btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; }
 .btn-primary:hover { background: linear-gradient(90deg, #ff8c42, #FF6B00); }
 .overlay-agotado-detalle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 10; display: flex; align-items: center; justify-content: center; }
 .badge-agotado-detalle { background: #dc3545; color: white; padding: 20px 40px; font-weight: bold; transform: rotate(-15deg); font-size: 2rem; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 .transition-btn { transition: transform 0.2s; }
 .transition-btn:active { transform: scale(0.95); }
-
 @keyframes heartbeat { 0% { transform: scale(1); } 25% { transform: scale(1.3); } 50% { transform: scale(1); } 75% { transform: scale(1.3); } 100% { transform: scale(1); } }
 .heartbeat-animation { animation: heartbeat 0.6s ease-in-out; }
-
-/* ANIMACIÓN FUEGO PARA BARRA DE URGENCIA */
 @keyframes flicker { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
 .fire-anim { animation: flicker 1s infinite alternate; }
-
 .skeleton-box { background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 8px; }
 @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
@@ -512,7 +423,5 @@ const formatPrice = (p) => {
 [data-bs-theme="dark"] .accordion-button:not(.collapsed) { background-color: #1a1a1a !important; color: #FF6B00 !important; }
 [data-bs-theme="dark"] .accordion-item { background-color: #242424 !important; border-color: #383838 !important; }
 [data-bs-theme="dark"] .accordion-body { color: #ccc !important; }
-
-/* Soporte Barra de Urgencia en Modo Oscuro */
 [data-bs-theme="dark"] .scarcity-bar-container { background-color: #2a1b1b !important; border-color: #dc3545 !important; }
 </style>
