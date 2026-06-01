@@ -4,7 +4,6 @@
 
     <aside class="barra-lateral" :class="{ 'activa': menuAbierto }">
       <div class="barra-lateral-cabecera">
-        <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
         <div class="logo">
           <img src="/img/logoPrintHub.jpeg" alt="Logo de PrintHub" />
         </div>
