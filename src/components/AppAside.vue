@@ -4,17 +4,18 @@
 
     <aside class="barra-lateral" :class="{ 'activa': menuAbierto }">
       <div class="barra-lateral-cabecera">
+        <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
         <div class="logo">
           <img src="/img/logoPrintHub.jpeg" alt="Logo de PrintHub" />
         </div>
       </div>
 
+      <!-- BUSCADOR PREDICTIVO -->
       <div class="px-2 mb-4 position-relative">
         <div class="input-group input-group-sm shadow-sm">
           <span class="input-group-text bg-white border-end-0">🔍</span>
           <input type="text" class="form-control border-start-0 py-2" v-model="liveSearchQuery" placeholder="Buscar maqueta rápida...">
         </div>
-        
         <ul v-if="liveSearchResults.length > 0" class="list-group position-absolute w-100 shadow-lg mt-1 z-3 live-search-results" style="max-height: 250px; overflow-y: auto;">
           <li v-for="res in liveSearchResults" :key="res.id" class="list-group-item list-group-item-action p-2 border-0 border-bottom" @click="goToProduct(res.id)" style="cursor:pointer;">
             <div class="d-flex align-items-center gap-2">
@@ -26,20 +27,16 @@
             </div>
           </li>
         </ul>
-        <div v-else-if="liveSearchQuery.length > 0" class="position-absolute w-100 shadow-lg mt-1 z-3 bg-white p-2 text-center text-muted small rounded live-search-results border">
-          No hay resultados.
-        </div>
       </div>
 
       <ul class="iconos-utilidad">
-        
-        <li class="d-flex align-items-center justify-content-between px-3 py-2 rounded-3 border theme-toggle-box mb-3 shadow-sm" style="background-color: #f8f9fa;">
-          <span class="fw-bold d-flex align-items-center gap-2 text-dark">
-            <span v-if="!isDarkMode" class="theme-icon">☀️ Claro</span>
-            <span v-else class="theme-icon">🌙 Oscuro</span>
+        <!-- TOGGLE ANIMADO MODO OSCURO -->
+        <li class="d-flex align-items-center justify-content-between px-3 py-2 rounded-3 border theme-toggle-box mb-2 shadow-sm" style="background-color: #f8f9fa;">
+          <span class="fw-bold d-flex align-items-center gap-2 text-dark" style="font-size: 0.9rem;">
+            {{ isDarkMode ? '🌙 Oscuro' : '☀️ Claro' }}
           </span>
-          <div class="form-check form-switch m-0 p-0 d-flex align-items-center">
-            <input class="form-check-input ms-0 custom-switch shadow-none" type="checkbox" role="switch" :checked="isDarkMode" @change="toggleDarkMode" style="cursor: pointer; width: 45px; height: 24px;">
+          <div class="form-check form-switch m-0 p-0">
+            <input class="form-check-input ms-0 custom-switch shadow-none" type="checkbox" role="switch" :checked="isDarkMode" @change="toggleDarkMode" style="cursor: pointer;">
           </div>
         </li>
 
@@ -53,30 +50,33 @@
         <li><router-link to="/mis-pedidos" class="nav-link" @click="closeMenu">📦 Mis Pedidos</router-link></li>
         
         <li v-if="auth.user" class="nav-item dropdown" style="list-style: none; position: relative;">
-          <a class="nav-link dropdown-toggle text-black" href="#" role="button" @click.prevent="toggleUserMenu">
-            {{ auth.user.name }} ▾
-          </a>
+          <a class="nav-link dropdown-toggle text-black" href="#" role="button" @click.prevent="toggleUserMenu">{{ auth.user.name }} ▾</a>
           <ul class="dropdown-menu dropdown-menu-end" :class="{ 'show': usuarioMenuAbierto }">
             <li><router-link class="dropdown-item" to="/dashboard" @click="closeMenu">Mi Perfil</router-link></li>
             <li><hr class="dropdown-divider"></li>
             <li><button @click="handleLogout" class="dropdown-item text-danger" style="background:none; border:none; width:100%; text-align:left;">Cerrar Sesión</button></li>
           </ul>
         </li>
-        <li v-else style="list-style: none;">
-          <router-link class="btn btn-outline-dark btn-sm w-100 mt-2" to="/login" @click="closeMenu">👤 Login</router-link>
-        </li>
+        <li v-else style="list-style: none;"><router-link class="btn btn-outline-dark btn-sm w-100 mt-2" to="/login" @click="closeMenu">👤 Login</router-link></li>
       </ul>
       
-      <h3 class="etiqueta-menu mt-3">Menú</h3>
+      <h3 class="etiqueta-menu mt-2">Menú</h3>
       <nav>
         <ul>
           <li><router-link to="/" @click="closeMenu">Inicio</router-link></li>
           <li class="desplegable">
             <a href="#" @click.prevent="toggleSubmenu">Maquetas Personalizadas ▾</a>
-            <ul class="contenido-desplegable" :class="{ 'mostrar': submenuAbierto }">
-              <li><router-link to="/products?cat=videojuegos" @click="closeMenu">Videojuegos</router-link></li>
-              <li><router-link to="/products?cat=arquitectura" @click="closeMenu">Arquitectura</router-link></li>
-              <li><router-link to="/products?cat=automoviles" @click="closeMenu">Automóviles</router-link></li>
+            <!-- MEGA-MENÚ VISUAL -->
+            <ul class="contenido-desplegable p-1 rounded-3 border mt-1 mega-menu-box shadow-sm" :class="{ 'mostrar': submenuAbierto }" style="background: #fff; list-style: none;">
+              <li><router-link to="/products?cat=videojuegos" class="d-flex align-items-center gap-2 p-2 rounded text-decoration-none mega-item" @click="closeMenu">
+                <span>🎮</span> <span class="fw-bold text-dark title-mega" style="font-size: 0.9rem;">Videojuegos</span>
+              </router-link></li>
+              <li><router-link to="/products?cat=arquitectura" class="d-flex align-items-center gap-2 p-2 rounded text-decoration-none mega-item" @click="closeMenu">
+                <span>🏛️</span> <span class="fw-bold text-dark title-mega" style="font-size: 0.9rem;">Arquitectura</span>
+              </router-link></li>
+              <li><router-link to="/products?cat=automoviles" class="d-flex align-items-center gap-2 p-2 rounded text-decoration-none mega-item" @click="closeMenu">
+                <span>🏎️</span> <span class="fw-bold text-dark title-mega" style="font-size: 0.9rem;">Automóviles</span>
+              </router-link></li>
             </ul>
           </li>
           <li><router-link to="/products" @click="closeMenu">Todos Nuestros Productos</router-link></li>
@@ -89,6 +89,7 @@
     </aside>
   </div>
 
+  <!-- OFFCANVAS MINI-CARRITO -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="miniCart" style="width: 400px; z-index: 2000;">
     <div class="offcanvas-header bg-light border-bottom">
       <h5 class="offcanvas-title fw-bold">Resumen de Compra 🛍️</h5>
@@ -96,42 +97,33 @@
     </div>
     <div class="px-3 pt-3 pb-2 border-bottom progress-container" v-if="cartItems.length > 0">
       <p v-if="remainingShipping > 0" class="small fw-bold mb-1 text-center">Faltan <span class="text-primary">{{ formatPrice(remainingShipping) }}</span> para envío <span class="text-success">GRATIS 🚚</span></p>
-      <p v-else class="small fw-bold text-success mb-1 text-center">¡Ya tienes envío GRATIS! 🎉</p>
-      <div class="progress" style="height: 8px; border-radius: 10px;">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" :style="{ width: shippingProgress + '%' }"></div>
-      </div>
+      <div class="progress" style="height: 8px;"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" :style="{ width: shippingProgress + '%' }"></div></div>
     </div>
-    <div class="offcanvas-body p-2 p-sm-3">
-      <div v-if="cartItems.length === 0" class="text-center py-5">
-        <div class="fs-1 mb-3">🧺</div><p class="text-muted">Tu carrito está vacío.</p>
-        <button class="btn btn-primary" @click="navigateTo('/products')">Ver Productos</button>
-      </div>
+    <div class="offcanvas-body">
+      <div v-if="cartItems.length === 0" class="text-center py-5"><p class="text-muted">Tu carrito está vacío.</p></div>
       <div v-else>
-        <div v-for="item in cartItems" :key="item.id" class="card mb-3 border-0 shadow-sm overflow-hidden">
+        <div v-for="item in cartItems" :key="item.id" class="card mb-3 border-0 shadow-sm">
           <div class="row g-0 align-items-center">
-            <div class="col-4 p-2"><img :src="getImagePath(item.image)" class="img-fluid rounded" style="height: 90px; width: 100%; object-fit: cover;"></div>
-            <div class="col-8 px-2 py-2">
-              <h6 class="mb-1 fw-bold text-truncate pe-3">{{ item.name }}</h6>
-              <span class="text-success fw-bold">{{ formatPrice(item.price * item.quantity) }}</span>
-              <div class="d-flex justify-content-between align-items-center mt-2">
-                <div class="input-group input-group-sm" style="width: 100px;">
-                  <button class="btn btn-outline-secondary px-2" type="button" @click="decreaseQty(item)">-</button>
-                  <input type="text" class="form-control text-center px-0 fw-bold" :value="item.quantity" readonly>
-                  <button class="btn btn-outline-secondary px-2" type="button" @click="increaseQty(item)">+</button>
+            <div class="col-4 p-2"><img :src="getImagePath(item.image)" class="img-fluid rounded" style="height: 80px; object-fit: cover;"></div>
+            <div class="col-8 px-2">
+              <h6 class="mb-1 fw-bold">{{ item.name }}</h6>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="input-group input-group-sm" style="width: 80px;">
+                  <button class="btn btn-outline-secondary" @click="decreaseQty(item)">-</button>
+                  <input type="text" class="form-control text-center px-0" :value="item.quantity" readonly>
+                  <button class="btn btn-outline-secondary" @click="increaseQty(item)">+</button>
                 </div>
-                <button class="btn btn-link btn-sm text-danger p-0 fw-bold text-decoration-none" @click="removeItem(item.id)">🗑️</button>
+                <button class="btn btn-link btn-sm text-danger" @click="removeItem(item.id)">🗑️</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="cartItems.length > 0" class="offcanvas-footer p-4 border-top bg-light">
+    <div v-if="cartItems.length > 0" class="offcanvas-footer p-4 border-top">
       <div class="d-flex justify-content-between mb-3"><span class="h5">Total:</span><span class="h5 fw-bold text-primary">{{ formatPrice(totalPrice) }}</span></div>
-      <div class="d-grid gap-2">
-        <button class="btn btn-success btn-lg fw-bold" @click="navigateTo('/checkout')">Finalizar Pedido 💳</button>
-        <button class="btn btn-outline-secondary btn-sm" @click="navigateTo('/cart')">Ver carrito completo</button>
-      </div>
+      <button class="btn btn-success w-100 fw-bold" @click="navigateTo('/checkout')">Finalizar Pedido 💳</button>
+      <button class="btn btn-outline-secondary w-100 mt-2 btn-sm" @click="navigateTo('/cart')">Ver carrito completo</button>
     </div>
   </div>
 </template>
@@ -165,56 +157,53 @@ const toggleDarkMode = () => {
   localStorage.setItem('theme', theme);
 };
 
+// --- CORRECCIÓN: EVITAR SALTO AL NAVEGAR DESDE EL OFFCANVAS ---
 const navigateTo = (path) => {
   const el = document.getElementById('miniCart');
   const instance = bootstrap.Offcanvas.getInstance(el);
-  if (instance) instance.hide();
-  router.push(path);
+  
+  if (instance) {
+    // Esperamos a que Bootstrap termine su animación y restaure el scrollbar
+    el.addEventListener('hidden.bs.offcanvas', function handler() {
+      router.push(path);
+      el.removeEventListener('hidden.bs.offcanvas', handler);
+    }, { once: true });
+    
+    instance.hide();
+  } else {
+    router.push(path);
+  }
 };
+// -------------------------------------------------------------
 
 const liveSearchQuery = ref('');
 const allProducts = ref([]);
-
 const liveSearchResults = computed(() => {
   if (liveSearchQuery.value.trim().length < 2) return [];
   const q = liveSearchQuery.value.toLowerCase();
   return allProducts.value.filter(p => p.name.toLowerCase().includes(q)).slice(0, 5);
 });
-
-const goToProduct = (id) => {
-  liveSearchQuery.value = ''; 
-  closeMenu(); 
-  router.push(`/products/${id}`);
-};
+const goToProduct = (id) => { liveSearchQuery.value = ''; closeMenu(); router.push(`/products/${id}`); };
 
 const handleLogout = async () => { await auth.logout(); window.location.href = '/'; };
-
 const cartItems = computed(() => cartStore.cart || []);
 const cartCount = computed(() => cartStore.totalItems || 0);
 const totalPrice = computed(() => cartStore.totalPrice || 0);
 const removeItem = (id) => cartStore.removeFromCart(id);
-
-const increaseQty = (item) => { if (item.quantity < item.stock) item.quantity++; else alert("No hay más stock disponible."); };
+const increaseQty = (item) => { if (item.quantity < item.stock) item.quantity++; else alert("Sin stock"); };
 const decreaseQty = (item) => { if (item.quantity > 1) item.quantity--; else removeItem(item.id); };
-
 const FREE_SHIPPING_THRESHOLD = 50;
 const remainingShipping = computed(() => Math.max(FREE_SHIPPING_THRESHOLD - totalPrice.value, 0));
 const shippingProgress = computed(() => Math.min((totalPrice.value / FREE_SHIPPING_THRESHOLD) * 100, 100));
-
 const formatPrice = (p) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
 const getImagePath = (img) => img ? (img.startsWith('http') ? img : `/img/${img}`) : '/img/marcaDeAgua.png';
 
 onMounted(async () => {
     auth.fetchUser();
-    try {
-      const res = await axios.get('/api/products');
-      allProducts.value = res.data;
-    } catch (e) { console.error("Error al precargar productos"); }
-
+    try { const res = await axios.get('/api/products'); allProducts.value = res.data; } catch (e) {}
     const savedTheme = localStorage.getItem('theme') || 'light';
     isDarkMode.value = savedTheme === 'dark';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
-
     const el = document.getElementById('miniCart');
     if (el) {
         el.addEventListener('show.bs.offcanvas', () => { isCartOpen.value = true; });
@@ -235,35 +224,22 @@ onMounted(async () => {
 .barra-lateral nav ul li a { color: #222; text-decoration: none; font-weight: 500; display: block; padding: 0.5rem 1rem; border-radius: 8px; }
 .alternar-menu { position: fixed; top: 10px; right: 10px; z-index: 1100; background: linear-gradient(90deg, #FF6B00, #ff8c42); color: #fff; border: none; padding: 12px 16px; border-radius: 12px; font-size: 20px; }
 .dropdown-menu.show { display: block; position: absolute; background: white; border: 1px solid #ddd; width: 100%; z-index: 2000; }
-
-/* Transición icono theme */
-.theme-icon { transition: all 0.3s ease; }
+.mega-item { transition: all 0.2s; border: 1px solid transparent; }
+.mega-item:hover { background-color: #f8f9fa; border-color: #eaeaea; transform: translateX(5px); }
+.theme-toggle-box { transition: all 0.3s ease; }
 </style>
 
 <style>
 /* CSS MODO OSCURO GLOBAL */
-[data-bs-theme="dark"] body, [data-bs-theme="dark"] #app, [data-bs-theme="dark"] main, [data-bs-theme="dark"] .product-detail-container, [data-bs-theme="dark"] .layout-limpio { background-color: #121212 !important; color: #e0e0e0 !important; }
-[data-bs-theme="dark"] .barra-lateral { background-color: #161616 !important; border-left-color: #FF6B00 !important; box-shadow: -6px 0 25px rgba(0, 0, 0, 0.5) !important; }
+[data-bs-theme="dark"] body, [data-bs-theme="dark"] #app, [data-bs-theme="dark"] main { background-color: #121212 !important; color: #e0e0e0 !important; }
+[data-bs-theme="dark"] .barra-lateral { background-color: #161616 !important; border-left-color: #FF6B00 !important; }
 [data-bs-theme="dark"] .barra-lateral nav ul li a { color: #ffffff !important; }
 [data-bs-theme="dark"] .barra-lateral nav ul li a:hover { background: #2c2c2c !important; }
-[data-bs-theme="dark"] .iconos-utilidad li a, [data-bs-theme="dark"] .iconos-utilidad li button { background-color: #242424 !important; border: 1px solid #383838 !important; color: #ffffff !important; }
-[data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3, [data-bs-theme="dark"] h4, [data-bs-theme="dark"] h5, [data-bs-theme="dark"] h6, [data-bs-theme="dark"] p, [data-bs-theme="dark"] span:not(.badge), [data-bs-theme="dark"] label, [data-bs-theme="dark"] .form-label, [data-bs-theme="dark"] .text-black, [data-bs-theme="dark"] .text-dark { color: #f8f9fa !important; }
-[data-bs-theme="dark"] .tarjeta-producto, [data-bs-theme="dark"] .tarjeta-testimonio, [data-bs-theme="dark"] .card, [data-bs-theme="dark"] .bg-white, [data-bs-theme="dark"] .product-info-card { background-color: #242424 !important; border: 1px solid #383838 !important; color: #f8f9fa !important; }
+[data-bs-theme="dark"] .iconos-utilidad li a, [data-bs-theme="dark"] .theme-toggle-box { background-color: #242424 !important; border-color: #383838 !important; color: #ffffff !important; }
 [data-bs-theme="dark"] .offcanvas { background-color: #161616 !important; color: #f8f9fa !important; }
 [data-bs-theme="dark"] .offcanvas-header, [data-bs-theme="dark"] .offcanvas-footer { background-color: #121212 !important; border-color: #2c2c2c !important; }
-[data-bs-theme="dark"] .dropdown-menu { background-color: #242424 !important; border: 1px solid #383838 !important; }
-[data-bs-theme="dark"] .dropdown-item { color: #ffffff !important; }
-[data-bs-theme="dark"] .dropdown-item:hover { background-color: #383838 !important; }
-[data-bs-theme="dark"] footer, [data-bs-theme="dark"] .app-footer { background-color: #0a0a0a !important; border-top: 1px solid #2c2c2c !important; }
-[data-bs-theme="dark"] footer a, [data-bs-theme="dark"] footer p { color: #e0e0e0 !important; }
-[data-bs-theme="dark"] .input-group .form-control { background-color: #121212 !important; color: #fff !important; border-color: #444 !important; }
-[data-bs-theme="dark"] .input-group .btn-outline-secondary, [data-bs-theme="dark"] .input-group-text { background-color: #1a1a1a !important; color: #fff !important; border-color: #444 !important; }
-
-[data-bs-theme="dark"] .live-search-results { background-color: #242424 !important; border-color: #333 !important; }
-[data-bs-theme="dark"] .live-search-results .list-group-item { background-color: #242424 !important; border-bottom: 1px solid #383838 !important; color: #fff !important; }
-[data-bs-theme="dark"] .live-search-results .list-group-item:hover { background-color: #383838 !important; }
-
-/* Soporte para Switch de Tema */
-[data-bs-theme="dark"] .theme-toggle-box { background-color: #242424 !important; border-color: #383838 !important; }
-[data-bs-theme="dark"] .custom-switch:checked { background-color: #FF6B00; border-color: #FF6B00; }
+[data-bs-theme="dark"] .input-group .form-control, [data-bs-theme="dark"] .input-group-text { background-color: #1a1a1a !important; color: #fff !important; border-color: #444 !important; }
+[data-bs-theme="dark"] .mega-menu-box { background-color: #242424 !important; border-color: #383838 !important; }
+[data-bs-theme="dark"] .title-mega { color: #f8f9fa !important; }
+[data-bs-theme="dark"] .mega-item:hover { background-color: #383838 !important; border-color: #444 !important; }
 </style>
