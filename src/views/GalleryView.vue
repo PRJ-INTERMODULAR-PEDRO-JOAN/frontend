@@ -108,23 +108,5 @@
   </script>
   
   <style scoped>
-  .gallery-page { background-color: #f9f9f9; }
-  .banner { background: linear-gradient(90deg, #FF6B00, #ff7b1d); color: #fff; height: 40px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: 'Roboto Mono', monospace; overflow: hidden; white-space: nowrap; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
-  .banner-texto { display: inline-block; padding-left: 100%; animation: scrollText 40s linear infinite; color: #000; }
-  .carousel-container { position: relative; width: 100%; max-width: 1000px; margin: 0 auto; background: #000; overflow: hidden; }
-  .carousel-viewport { width: 100%; overflow: hidden; }
-  .carousel-track { display: flex; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
-  .carousel-slide { flex: 0 0 100%; width: 100%; display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; }
-  .carousel-image { width: 100%; height: 300px; object-fit: cover; display: block; }
-  @media (min-width: 768px) { .carousel-image { height: 550px; } }
-  .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.3); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-  .carousel-btn:hover { background: #ff6b00; transform: translateY(-50%) scale(1.1); }
-  .carousel-btn.prev { left: 20px; }
-  .carousel-btn.next { right: 20px; }
-  .arrow { font-size: 1.5rem; line-height: 1; padding-bottom: 3px; }
-  .carousel-dots-container { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 10; }
-  .carousel-dots { background: rgba(0, 0, 0, 0.4); padding: 8px 16px; border-radius: 20px; display: flex; gap: 10px; backdrop-filter: blur(4px); }
-  .dot { width: 10px; height: 10px; background: rgba(255, 255, 255, 0.5); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
-  .dot:hover { background: rgba(255, 255, 255, 0.9); }
-  .dot.active { background: #ff6b00; transform: scale(1.3); box-shadow: 0 0 5px rgba(255, 107, 0, 0.5); }
+  @import '../assets/css/gallery.css';
   </style>

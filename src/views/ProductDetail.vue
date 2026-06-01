@@ -399,29 +399,9 @@ const formatPrice = (p) => {
 </script>
 
 <style scoped>
-.sticky-cart-bar { background-color: #ffffff; backdrop-filter: blur(10px); }
-.slide-up-enter-active, .slide-up-leave-active { transition: all 0.3s ease-out; }
-.slide-up-enter-from, .slide-up-leave-to { transform: translateY(100%); opacity: 0; }
-[data-bs-theme="dark"] .sticky-cart-bar { background-color: #1e1e1e !important; border-top-color: #333 !important; }
-.btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; }
-.btn-primary:hover { background: linear-gradient(90deg, #ff8c42, #FF6B00); }
-.overlay-agotado-detalle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 10; display: flex; align-items: center; justify-content: center; }
-.badge-agotado-detalle { background: #dc3545; color: white; padding: 20px 40px; font-weight: bold; transform: rotate(-15deg); font-size: 2rem; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-.transition-btn { transition: transform 0.2s; }
-.transition-btn:active { transform: scale(0.95); }
-@keyframes heartbeat { 0% { transform: scale(1); } 25% { transform: scale(1.3); } 50% { transform: scale(1); } 75% { transform: scale(1.3); } 100% { transform: scale(1); } }
-.heartbeat-animation { animation: heartbeat 0.6s ease-in-out; }
-@keyframes flicker { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
-.fire-anim { animation: flicker 1s infinite alternate; }
-.skeleton-box { background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 8px; }
-@keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@import '../assets/css/product-detail-scoped.css';
 </style>
 
 <style>
-[data-bs-theme="dark"] .skeleton-box { background: linear-gradient(90deg, #2c2c2c 25%, #3a3a3a 50%, #2c2c2c 75%); background-size: 200% 100%; }
-[data-bs-theme="dark"] .accordion-button { background-color: #242424 !important; color: #f8f9fa !important; }
-[data-bs-theme="dark"] .accordion-button:not(.collapsed) { background-color: #1a1a1a !important; color: #FF6B00 !important; }
-[data-bs-theme="dark"] .accordion-item { background-color: #242424 !important; border-color: #383838 !important; }
-[data-bs-theme="dark"] .accordion-body { color: #ccc !important; }
-[data-bs-theme="dark"] .scarcity-bar-container { background-color: #2a1b1b !important; border-color: #dc3545 !important; }
+@import '../assets/css/product-detail-dark.css';
 </style>

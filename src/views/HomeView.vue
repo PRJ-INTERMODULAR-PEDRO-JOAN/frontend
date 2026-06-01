@@ -269,12 +269,8 @@ const truncate = (text, length) => {
 const recentlyViewed = ref([]);
 
 onMounted(() => {
-
     fetchProducts();
-
-    recentlyViewed.value = JSON.parse(
-        localStorage.getItem('recently_viewed') || '[]'
-    );
+    recentlyViewed.value = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -349,36 +345,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.banner-oferta-seccion { background: linear-gradient(135deg, #1a1a1a, #2c3e50); }
-.oferta-card { background-color: #ffffff; color: #212529; }
-.oferta-img-container { background-color: #f8f9fa; }
-.seccion-recientes { background-color: #f8f9fa; border-top: 1px solid #eaeaea;}
-.tarjeta-testimonio { background-color: #ffffff; border: 1px solid #eaeaea; }
-@keyframes scrollText { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
-@keyframes pulseGlow { 0% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } 50% { transform: scale(1.05); text-shadow: 0 0 12px rgba(255, 255, 255, 0.6); } 100% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); } }
-.animate-pulse { animation: pulse 2s infinite; }
-@keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); } }
-.tarjeta-producto { position: relative; overflow: hidden; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; padding: 15px; transition: 0.3s; }
-.tarjeta-producto:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-.overlay-agotado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 5; display: flex; align-items: center; justify-content: center; }
-.badge-agotado { background: #dc3545; color: white; padding: 10px 20px; font-weight: bold; transform: rotate(-15deg); font-size: 1.2rem; border-radius: 5px; }
-.badge-oferta { position: absolute; top: 10px; right: 10px; z-index: 4; }
-.imagen-maqueta { width: 100%; max-width: 267px; height: 350px; object-fit: cover; margin: 0 auto; display: block; border-radius: 8px; }
-.btn-primary { background: linear-gradient(90deg, #FF6B00, #ff8c42); border: none; color: white; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3); background: linear-gradient(90deg, #ff8c42, #FF6B00); }
+@import '../assets/css/home-scoped.css';
 </style>
 
 <style>
-[data-bs-theme="dark"] body, [data-bs-theme="dark"] .contenido-principal, [data-bs-theme="dark"] .productos-destacados, [data-bs-theme="dark"] .seccion-sobre-nosotros, [data-bs-theme="dark"] .seccion-testimonios { background-color: #121212 !important; }
-[data-bs-theme="dark"] .seccion-alterna, [data-bs-theme="dark"] .seccion-recientes { background-color: #1a1a1a !important; border-top: 1px solid #2a2a2a !important; }
-[data-bs-theme="dark"] .texto-principal, [data-bs-theme="dark"] h1, [data-bs-theme="dark"] h2, [data-bs-theme="dark"] h3, [data-bs-theme="dark"] .cita-testimonio { color: #f8f9fa !important; }
-[data-bs-theme="dark"] .text-muted, [data-bs-theme="dark"] .producto-descripcion, [data-bs-theme="dark"] .descripcion-oferta { color: #adb5bd !important; }
-[data-bs-theme="dark"] .tarjeta-producto, [data-bs-theme="dark"] .tarjeta-testimonio { background-color: #242424 !important; border: 1px solid #383838 !important; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; }
-[data-bs-theme="dark"] .tarjeta-producto:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important; }
-[data-bs-theme="dark"] .overlay-agotado { background: rgba(18, 18, 18, 0.75) !important; }
-[data-bs-theme="dark"] .oferta-card { background-color: #242424 !important; border: 1px solid #383838 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important; }
-[data-bs-theme="dark"] .oferta-img-container { background-color: #161616 !important; }
-[data-bs-theme="dark"] .btn-oferta-detalle, [data-bs-theme="dark"] .btn-volver-ver { color: #f8f9fa !important; border-color: #666 !important; }
-[data-bs-theme="dark"] .btn-oferta-detalle:hover, [data-bs-theme="dark"] .btn-volver-ver:hover { background-color: #383838 !important; border-color: #888 !important; }
-[data-bs-theme="dark"] .pie-pagina li { color : #FFF !important; }
+@import '../assets/css/home-dark.css';
 </style>

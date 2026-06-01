@@ -6,22 +6,22 @@
           <h2 class="logo">Print<span class="resaltado">Hub</span></h2><br />
           <div>
             <a class="iconos-sociales" href="#">
-              <img src="/img/facebook.svg" alt="Facebook"/>
+              <img src="/img/facebook.svg" loading="lazy" alt="Facebook"/>
             </a>
             <a class="iconos-sociales" href="#">
-              <img src="/img/linkedin.svg" alt="LinkedIn"/>
+              <img src="/img/linkedin.svg" loading="lazy" alt="LinkedIn"/>
             </a>
             <a class="iconos-sociales" href="#">
-              <img src="/img/youtube.svg" alt="YouTube"/>
+              <img src="/img/youtube.svg" loading="lazy" alt="YouTube"/>
             </a>
             <a class="iconos-sociales" href="#">
-              <img src="/img/insta.svg" alt="Instagram"/>
+              <img src="/img/insta.svg" loading="lazy" alt="Instagram"/>
             </a>
           </div>
         </div>
   
         <div class="pie-pagina-centro">
-          <img src="/img/fotterImage.jpg" alt="Imagen Global 3D" />
+          <img src="/img/fotterImage.jpg" loading="lazy" alt="Imagen Global 3D" />
         </div>
   
         <div class="pie-pagina-derecha">
@@ -54,87 +54,5 @@
   </script>
   
   <style scoped>
-.pie-pagina {
-    background: #e8eff5;
-    padding: 40px 20px;
-    border-top: 1px solid #d0dbe8;
-    font-family: 'Inter', sans-serif;
-    color: #333;
-  }
-  
-  .pie-pagina-contenedor {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .pie-pagina-izquierda img {
-    width: 140px;
-    margin-bottom: 15px;
-  }
-  
-  
-  .iconos-sociales img {
-    width: 38px;
-    height: 38px;
-    margin: 0 8px;
-    transition: transform 0.3s;
-  }
-  
-  .iconos-sociales img:hover{
-    transform: scale(1.2);
-  }
-  
-  .pie-pagina-centro img {
-    max-width: 320px;
-    border-radius: 12px;
-  }
-  
-  .pie-pagina-derecha {
-    text-align: left;
-  }
-  
-  .pie-pagina-derecha h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #FF6B00;
-  }
-  
-  .pie-pagina-derecha ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .pie-pagina-derecha li {
-    margin-bottom: 8px;
-    font-size: 14px;
-  }
-  
-  .pie-pagina-derecha a {
-    color: #333;
-    text-decoration: none;
-  }
-  
-  .pie-pagina-derecha a:hover {
-    color: #007BFF;
-  }
-  
-  .logo {
-    margin-top: 10px;
-    font-size: 2.5rem;
-    color: #000000;
-    font-family: 'Chakra Petch', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  @media (max-width: 900px) {
-    .pie-pagina-contenedor {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
-    .pie-pagina-derecha { text-align: center; }
-  }
+  @import '../assets/css/footer.css';
   </style>

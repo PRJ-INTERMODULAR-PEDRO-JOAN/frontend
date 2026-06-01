@@ -1,0 +1,66 @@
+[data-bs-theme="dark"] body, 
+[data-bs-theme="dark"] .contenido-principal, 
+[data-bs-theme="dark"] .productos-destacados, 
+[data-bs-theme="dark"] .seccion-sobre-nosotros, 
+[data-bs-theme="dark"] .seccion-testimonios { 
+    background-color: #121212 !important; 
+}
+
+[data-bs-theme="dark"] .seccion-alterna, 
+[data-bs-theme="dark"] .seccion-recientes { 
+    background-color: #1a1a1a !important; 
+    border-top: 1px solid #2a2a2a !important; 
+}
+
+[data-bs-theme="dark"] .texto-principal, 
+[data-bs-theme="dark"] h1, 
+[data-bs-theme="dark"] h2, 
+[data-bs-theme="dark"] h3, 
+[data-bs-theme="dark"] .cita-testimonio { 
+    color: #f8f9fa !important; 
+}
+
+[data-bs-theme="dark"] .text-muted, 
+[data-bs-theme="dark"] .producto-descripcion, 
+[data-bs-theme="dark"] .descripcion-oferta { 
+    color: #adb5bd !important; 
+}
+
+[data-bs-theme="dark"] .tarjeta-producto, 
+[data-bs-theme="dark"] .tarjeta-testimonio { 
+    background-color: #242424 !important; 
+    border: 1px solid #383838 !important; 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important; 
+}
+
+[data-bs-theme="dark"] .tarjeta-producto:hover { 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important; 
+}
+
+[data-bs-theme="dark"] .overlay-agotado { 
+    background: rgba(18, 18, 18, 0.75) !important; 
+}
+
+[data-bs-theme="dark"] .oferta-card { 
+    background-color: #242424 !important; 
+    border: 1px solid #383838 !important; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important; 
+}
+
+[data-bs-theme="dark"] .oferta-img-container { 
+    background-color: #161616 !important; 
+}
+
+[data-bs-theme="dark"] .btn-oferta-detalle, 
+[data-bs-theme="dark"] .btn-volver-ver { 
+    color: #f8f9fa !important; border-color: #666 !important; 
+}
+
+[data-bs-theme="dark"] .btn-oferta-detalle:hover, 
+[data-bs-theme="dark"] .btn-volver-ver:hover { 
+    background-color: #383838 !important; border-color: #888 !important; 
+}
+
+[data-bs-theme="dark"] .pie-pagina li { 
+    color : #FFF !important; 
+}
