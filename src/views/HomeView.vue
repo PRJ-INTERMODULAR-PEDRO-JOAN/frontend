@@ -10,7 +10,7 @@
         </div>
       </a>
 
-      <section class="hero" style="background: url('/img/fondoPrincipio.jpg') no-repeat center center/cover;">
+      <section class="hero" style="background: url('/img/fondoPrincipio.webp') no-repeat center center/cover;">
         <div class="container h-100">
           <div class="row h-100 hero-fila">
             <div class="col-12 hero-contenido">

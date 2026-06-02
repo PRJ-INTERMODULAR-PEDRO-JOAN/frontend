@@ -82,9 +82,9 @@
   import MainLayout from '../layouts/MainLayout.vue';
   
   const secciones = reactive([
-      { id: 'videojuegos', titulo: 'Videojuegos', imagenes: ['juego1.jpg', 'juego2.jpg', 'juego3.jpg', 'juego4.jpg'] },
-      { id: 'arquitectura', titulo: 'Arquitectura', imagenes: ['puente1.jpg', 'puente2.jpg', 'puente3.jpg', 'puente4.jpg'] },
-      { id: 'automoviles', titulo: 'Automóviles', imagenes: ['coche1.jpg', 'coche2.jpg', 'coche3.jpg', 'coche4.jpg'] }
+      { id: 'videojuegos', titulo: 'Videojuegos', imagenes: ['juego1.webp', 'juego2.webp', 'juego3.webp', 'juego4.webp'] },
+      { id: 'arquitectura', titulo: 'Arquitectura', imagenes: ['puente1.webp', 'puente2.webp', 'puente3.webp', 'puente4.webp'] },
+      { id: 'automoviles', titulo: 'Automóviles', imagenes: ['coche1.webp', 'coche2.webp', 'coche3.webp', 'coche4.webp'] }
   ]);
   
   const currentIndices = ref(secciones.map(() => 0));
