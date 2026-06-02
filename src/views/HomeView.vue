@@ -5,7 +5,7 @@
       <a href="#destacados" class="enlace-banner" style="display:block;">
         <div class="banner">
           <div class="banner-texto">
-            ¡Oferta especial de Navidad! 🦌🎅 Solo por tiempo limitado.
+            ¡Oferta especial de Navidad! 🦌🎅 Solo por tiempo limitado. Hola soy Pedro
           </div>
         </div>
       </a>
