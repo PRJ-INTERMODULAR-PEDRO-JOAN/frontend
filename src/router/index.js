@@ -79,7 +79,12 @@ const router = createRouter({
       component: WishlistView,
       meta: { requiresAuth: true } // Protegida
     },
-    { path: '/:pathMatch(.*)*', redirect: '/' }
+    { path: '/:pathMatch(.*)*', redirect: '/' },
+    {
+      path: '/segunda-mano',
+      name: 'segunda-mano',
+      component: () => import('../views/SecondHandView.vue')
+    }
   ],
 
   scrollBehavior(to, from, savedPosition) {
