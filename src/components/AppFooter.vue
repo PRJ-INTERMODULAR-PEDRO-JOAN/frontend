@@ -21,7 +21,7 @@
         </div>
   
         <div class="pie-pagina-centro">
-          <img src="/img/fotterImage.jpg" loading="lazy" alt="Imagen Global 3D" />
+          <img src="/img/fotterImage.webp" loading="lazy" alt="Imagen Global 3D" />
         </div>
   
         <div class="pie-pagina-derecha">
