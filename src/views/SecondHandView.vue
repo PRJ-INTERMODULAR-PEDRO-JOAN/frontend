@@ -62,7 +62,7 @@ const fetchSecondHandProducts = async () => {
   try {
     // IMPORTANTE: Ajusta esta URL según cómo tengas configurado tu axios (por ejemplo, si usas una instancia base)
     // Si usas api/axios.js, podrías importarlo: import api from '@/api/axios.js' y hacer api.get(...)
-    const response = await axios.get('http://localhost/api/products/second-hand');
+    const response = await axios.get('https://localhost/api/products/second-hand');
     products.value = response.data;
   } catch (error) {
     console.error('Error al cargar los productos de segunda mano:', error);
